@@ -139,6 +139,14 @@ function selectDirection(dir) {
   event.currentTarget.style.opacity = '1';
   event.currentTarget.style.transform = 'scale(1.05)';
   document.getElementById('range-section').style.display = 'block';
+  // Update range button labels based on direction
+  const sign = dir === 'up' ? '+' : '-';
+  const rangeBtns = document.querySelectorAll('.range-btn');
+  if (rangeBtns.length >= 3) {
+    rangeBtns[0].textContent = `${sign}1~3%`;
+    rangeBtns[1].textContent = `${sign}3~5%`;
+    rangeBtns[2].textContent = `${sign}5% 이상`;
+  }
 }
 
 function selectRange(range) {
@@ -253,6 +261,16 @@ function toggleTheme() {
   btn.textContent = isLight ? '☀️' : '🌙';
   btn.title = isLight ? '다크모드로 전환' : '라이트모드로 전환';
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  syncDarkModeLabel();
+}
+
+function syncDarkModeLabel() {
+  const isLight = document.body.classList.contains('light');
+  const label = document.getElementById('darkmode-status');
+  if (label) {
+    label.textContent = isLight ? 'OFF' : 'ON';
+    label.style.color = isLight ? 'var(--text-dim)' : 'var(--accent)';
+  }
 }
 
 // Load saved theme
@@ -263,4 +281,6 @@ function toggleTheme() {
     const btn = document.getElementById('theme-toggle');
     if (btn) { btn.textContent = '☀️'; btn.title = '다크모드로 전환'; }
   }
+  // Sync on page load after DOM is ready
+  document.addEventListener('DOMContentLoaded', syncDarkModeLabel);
 })();
