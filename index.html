@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🔮 운명전쟁 - 당신의 작두 실력을 증명하라</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">🌙</button>
+<div id="confetti" class="confetti-container"></div>
+
+<!-- 1. Splash -->
+<div id="splash" class="screen active">
+<div class="splash-screen">
+<div class="splash-logo">🔮</div>
+<div class="splash-title">운명<span>전쟁</span></div>
+<p class="splash-tagline">당신의 작두 실력을 증명하라</p>
+<div class="social-login">
+<button class="social-btn social-kakao" onclick="enterApp()">💬 카카오로 시작하기</button>
+<button class="social-btn social-google" onclick="enterApp()">G 구글로 시작하기</button>
+<button class="social-btn social-apple" onclick="enterApp()"> Apple로 시작하기</button>
+</div>
+</div>
+</div>
+
+<!-- 2. Home -->
+<div id="home" class="screen">
+<div class="top-bar">
+<div class="logo">🔮 운명<span>전쟁</span></div>
+<div class="actions"><button>🔔</button><button onclick="navigate('mypage')">👤</button></div>
+</div>
+<div class="card">
+<div class="card-title">📊 내 작두 현황</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+<span class="tier-badge tier-gold">⭐ 골드</span>
+<span style="font-size:12px;color:var(--text-dim)">다음 티어까지 승률 +7% 필요</span>
+</div>
+<div class="stats-row">
+<div class="stat-item"><div class="stat-value" style="color:var(--up)">68%</div><div class="stat-label">승률</div></div>
+<div class="stat-item"><div class="stat-value" style="color:var(--gold)">5</div><div class="stat-label">연속적중</div></div>
+<div class="stat-item"><div class="stat-value">#142</div><div class="stat-label">랭킹</div></div>
+<div class="stat-item"><div class="stat-value">85</div><div class="stat-label">작두력</div></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">⚔️ 활성 슬롯 (3/5)</div>
+<div class="slot-card up" onclick="showResult()">
+<div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자</div><div class="slot-dir">상승 예측</div></div></div>
+<div class="slot-meta"><div class="slot-change">+2.3%</div><div class="slot-time">D-1</div></div>
+</div>
+<div class="slot-card down">
+<div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">SK하이닉스</div><div class="slot-dir">하락 예측</div></div></div>
+<div class="slot-meta"><div class="slot-change">-1.0%</div><div class="slot-time">D-3</div></div>
+</div>
+<div class="slot-card up">
+<div class="slot-info"><span class="slot-icon">⛰️</span><div><div class="slot-name">NAVER</div><div class="slot-dir">상승 예측</div></div></div>
+<div class="slot-meta"><div class="slot-change">+5.0%</div><div class="slot-time">D-15</div></div>
+</div>
+<button class="add-slot" onclick="navigate('divine')">+ 새 점사 시작하기</button>
+</div>
+<div class="card" onclick="navigate('league')">
+<div class="card-title">🏆 오늘의 리그 현황</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<span class="tag" style="font-size:11px">🏆 정규리그</span>
+<span class="tag" style="font-size:11px;background:rgba(0,206,209,0.1);color:#00ced1;border-color:rgba(0,206,209,0.2)">👑 청개구리</span>
+</div>
+<div class="league-card" style="margin:0">
+<div class="league-rank top1">1</div>
+<div class="league-avatar">💎</div>
+<div class="league-info"><div class="league-name">작두달인_박씨</div><div class="league-stats">연속12적중</div></div>
+<div class="league-winrate" style="color:var(--up)">78%</div>
+</div>
+</div>
+</div>
+
+<!-- 3. Divine - Search -->
+<div id="divine" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">🔮 점사 - 종목 선택</div>
+<div class="actions"><button onclick="navigate('home')">✕</button></div>
+</div>
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input type="text" id="stock-search-input" placeholder="종목명 또는 코드 검색">
+</div>
+<div class="tag-row">
+<span class="tag" onclick="selectQuickStock('삼성전자')">삼성전자</span>
+<span class="tag" onclick="selectQuickStock('SK하이닉스')">SK하이닉스</span>
+<span class="tag" onclick="selectQuickStock('테슬라')">테슬라</span>
+<span class="tag" onclick="selectQuickStock('NAVER')">NAVER</span>
+<span class="tag" onclick="selectQuickStock('카카오')">카카오</span>
+</div>
+<div class="section-title">📈 전체 종목</div>
+<div id="stock-search-results"></div>
+</div>
+
+<!-- 3-2. Slot Type -->
+<div id="divine-slot" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">🔮 슬롯 타입 선택</div>
+<div class="actions"><button onclick="navigate('divine')">←</button></div>
+</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><span id="selected-stock-name" style="font-weight:700;font-size:16px">삼성전자</span></div>
+<div id="selected-stock-price" style="font-weight:700;font-size:18px;color:var(--accent)">₩82,300</div>
+</div>
+<div class="mini-chart" id="stock-mini-chart"></div>
+</div>
+<div class="section-title">⏱️ 슬롯 타입</div>
+<div class="card slot-type-btn" onclick="selectSlotType('short')" style="cursor:pointer">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-size:24px">⚡</span>
+<div><div style="font-weight:600">단타 (D+1)</div><div style="font-size:12px;color:var(--text-dim)">내일 장마감 기준 검증</div></div>
+</div>
+</div>
+<div class="card slot-type-btn" onclick="selectSlotType('swing')" style="cursor:pointer">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-size:24px">⏳</span>
+<div><div style="font-weight:600">스윙 (D+3~5)</div><div style="font-size:12px;color:var(--text-dim)">3~5일 후 검증</div></div>
+</div>
+</div>
+<div class="card slot-type-btn" onclick="selectSlotType('long')" style="cursor:pointer">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-size:24px">⛰️</span>
+<div><div style="font-weight:600">장기 (D+20)</div><div style="font-size:12px;color:var(--text-dim)">20일 후 검증</div></div>
+</div>
+</div>
+<p style="text-align:center;font-size:12px;color:var(--text-dim);margin:12px 0">잔여 슬롯: 2/5</p>
+<button class="btn btn-primary btn-full" onclick="goToOpinion()">다음 →</button>
+</div>
+
+<!-- 3-3. Opinion -->
+<div id="divine-opinion" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">🔮 관점 입력</div>
+<div class="actions"><button onclick="navigate('divine-slot')">←</button></div>
+</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+<span id="opinion-stock-name" style="font-weight:700">삼성전자 (005930)</span>
+<span id="opinion-stock-price" style="font-weight:700;color:var(--accent)">₩82,300</span>
+</div>
+<div id="opinion-slot-type" style="font-size:13px;color:var(--text-dim)">슬롯: ⚡단타</div>
+</div>
+<div class="section-title">💭 당신의 관점을 적어주세요</div>
+<textarea id="opinion-text" class="opinion-box" placeholder="예: 반도체 호재 떴음, 내일 무조건 상승"></textarea>
+<div class="section-title">빠른 키워드</div>
+<div class="tag-row">
+<span class="tag-keyword" onclick="toggleKeyword(this)">호재</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">악재</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">선반영</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">세력</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">수급</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">실적</span>
+<span class="tag-keyword" onclick="toggleKeyword(this)">역발상</span>
+</div>
+<button class="btn btn-gold btn-full" onclick="goToAIPreview()" style="margin-top:16px">🔮 AI 프리뷰 요청</button>
+</div>
+
+<!-- 4. AI Preview -->
+<div id="ai-preview" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">🤖 AI 분석 프리뷰</div>
+<div class="actions"><button onclick="navigate('divine-opinion')">←</button></div>
+</div>
+<div class="ai-bubble">
+<p>"당신의 논리는 <b style="color:var(--accent)">뉴스 기반 호재</b> 성향입니다.</p>
+<p style="margin-top:8px">과거 데이터상 이 정도 뉴스 강도는 <b style="color:var(--up)">사후 재료 소멸</b>로 하락할 확률이 <b style="color:var(--up)">65%</b>입니다.</p>
+<p style="margin-top:8px">그래도 출격하시겠습니까?"</p>
+</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+<span>AI 판단</span><span>하락 65% / 상승 35%</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,var(--down),var(--accent))"></div></div>
+</div>
+<div class="card" style="font-size:13px;color:var(--text-dim)">
+<span>💬 내 의견: </span><span id="ai-opinion-echo" style="color:var(--text)">반도체 호재 기대</span>
+</div>
+<div class="section-title">방향 선택</div>
+<div class="dir-buttons">
+<button class="btn btn-up" onclick="selectDirection('up')" style="padding:16px;font-size:16px">🔴 상승</button>
+<button class="btn btn-down" onclick="selectDirection('down')" style="padding:16px;font-size:16px">🔵 하락</button>
+</div>
+<div id="range-section" style="display:none">
+<div class="section-title">예상 구간 (골드 이상)</div>
+<div class="range-buttons">
+<button class="range-btn" onclick="selectRange('1-3')">+1~3%</button>
+<button class="range-btn" onclick="selectRange('3-5')">+3~5%</button>
+<button class="range-btn" onclick="selectRange('5+')">+5% 이상</button>
+</div>
+</div>
+<button class="btn btn-primary btn-full" onclick="deploy()" style="margin-top:20px;padding:16px;font-size:16px">⚔️ 출격! (최종 제출)</button>
+<button class="btn btn-outline btn-full" onclick="navigate('divine-opinion')" style="margin-top:8px">← 다시 생각해볼게</button>
+</div>
+
+<!-- 5. Deploy Complete -->
+<div id="deploy-complete" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">⚔️ 출격 완료!</div>
+<div class="actions"><button onclick="navigate('home')">✕</button></div>
+</div>
+<div class="charm-card">
+<div class="charm-symbol">🔮</div>
+<div class="charm-text" id="charm-stock">삼성전자</div>
+<div class="charm-detail" id="charm-dir">상승 점사 완료</div>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,215,0,0.2)">
+<p style="font-size:11px;color:var(--gold)">2026.05.27 출격</p>
+<p style="font-size:11px;color:var(--text-dim);margin-top:4px" id="charm-share-text">삼성전자 내일 상승 점사 완료 🔮</p>
+</div>
+</div>
+<div class="share-row">
+<button class="share-btn share-kakao">💬 카카오톡 공유</button>
+<button class="share-btn share-insta">📷 인스타 공유</button>
+</div>
+<button class="btn btn-outline btn-full" onclick="navigate('home')" style="margin-top:20px">홈으로 돌아가기</button>
+</div>
+
+<!-- 6. Result -->
+<div id="result" class="screen">
+<div class="top-bar">
+<div class="logo" style="font-size:16px">📊 점사 결과</div>
+<div class="actions"><button onclick="navigate('home')">✕</button></div>
+</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<div><span style="font-weight:700">삼성전자</span><span style="color:var(--text-dim);font-size:12px;margin-left:8px">⚡단타 | 2026.05.26</span></div>
+</div>
+<div style="margin-bottom:12px">
+<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px">내 예측: 🔴 상승 (+3~5%)</div>
+<div style="font-size:13px;color:var(--text-dim)">실제 결과: <span style="color:var(--up);font-weight:700">🔴 +4.2%</span></div>
+</div>
+<div style="text-align:center;padding:16px 0">
+<span class="result-badge result-hit" style="font-size:20px;animation:pulse 1.5s infinite">✅ 적중! 방향 ✓ 구간 ✓</span>
+</div>
+</div>
+<div class="card">
+<div class="card-title">🤖 AI 페르소나 학습 리포트</div>
+<div class="ai-bubble" style="margin:0">
+<p>"주인님은 반도체 뉴스에 강한 확신을 보이며, AI 반대 의견도 무시하는 <b style="color:var(--gold)">역발상 성향</b>입니다.</p>
+<p style="margin-top:8px">이번 적중으로 해당 바이어스 가중치를 <b style="color:var(--up)">+12% 상향</b>합니다."</p>
+</div>
+</div>
+<div class="card" style="text-align:center">
+<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px">획득 포인트</div>
+<div style="font-size:28px;font-weight:900;color:var(--gold)">+85 작두력</div>
+</div>
+<div class="share-row">
+<button class="share-btn share-kakao">💬 결과 카드 공유</button>
+<button class="share-btn share-insta">📷 인스타 공유</button>
+</div>
+<button class="btn btn-primary btn-full" onclick="navigate('home')" style="margin-top:12px">홈으로</button>
+</div>
+
+<!-- 7. League -->
+<div id="league" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">🏆 리그 랭킹</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
+<div class="tab-switch">
+<button class="active" onclick="switchLeagueTab('regular')">🏆 정규 리그</button>
+<button onclick="switchLeagueTab('frog')">👑 청개구리 리그</button>
+</div>
+<div id="league-list"></div>
+</div>
+
+<!-- 8. User Detail -->
+<div id="user-detail" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">👤 유저 카드</div><div class="actions"><button onclick="navigate('league')">←</button></div></div>
+<div class="card" style="text-align:center">
+<div style="font-size:48px;margin-bottom:8px">💎</div>
+<div style="font-size:18px;font-weight:700">작두달인_박씨</div>
+<span class="tier-badge tier-diamond" style="margin-top:8px">💎 DIAMOND</span>
+<div class="stats-row" style="margin-top:16px">
+<div class="stat-item"><div class="stat-value" style="color:var(--up)">78%</div><div class="stat-label">승률</div></div>
+<div class="stat-item"><div class="stat-value" style="color:var(--gold)">12</div><div class="stat-label">연속적중</div></div>
+<div class="stat-item"><div class="stat-value">#1</div><div class="stat-label">랭킹</div></div>
+<div class="stat-item"><div class="stat-value">542</div><div class="stat-label">작두력</div></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">최근 점사</div>
+<div class="slot-card up"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자</div><div class="slot-dir">상승 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">+4.2%</div></div></div>
+<div class="slot-card up"><div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">테슬라</div><div class="slot-dir">상승 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">+6.1%</div></div></div>
+<div class="slot-card down"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">카카오</div><div class="slot-dir">하락 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">-2.3%</div></div></div>
+</div>
+<div class="card">
+<div class="card-title">📝 신당 방명록</div>
+<div id="user-guestbook">
+<div class="gb-item"><div class="gb-avatar">😎</div><div class="gb-content"><div class="gb-author">무당조수_A</div><div class="gb-text">이 집 작두 잘 타네 🔥</div></div></div>
+<div class="gb-item"><div class="gb-avatar">🐸</div><div class="gb-content"><div class="gb-author">한강러버</div><div class="gb-text">한강물 차갑다 인간아 🥶</div></div></div>
+<div class="gb-item"><div class="gb-avatar">🙏</div><div class="gb-content"><div class="gb-author">주식고수</div><div class="gb-text">무당 그 자체 ㄷㄷ</div></div></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<input type="text" maxlength="30" placeholder="방명록 한 줄 (30자)" style="flex:1;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);font-family:inherit;outline:none">
+<button class="btn btn-primary" style="padding:10px 16px">등록</button>
+</div>
+</div>
+</div>
+
+<!-- 9. Shrine -->
+<div id="shrine" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">⛩️ 신당</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
+<div class="card" style="text-align:center">
+<div style="font-size:48px;margin-bottom:8px">⛩️</div>
+<div style="font-size:18px;font-weight:700;margin-bottom:4px">신당 방명록</div>
+<p style="font-size:13px;color:var(--text-dim)">작두의 신이 지켜보고 있다</p>
+</div>
+<div class="section-title">🔥 인기 점사 카드</div>
+<div class="card" onclick="navigate('user-detail')" style="cursor:pointer">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+<div class="league-avatar">💎</div>
+<div><div style="font-weight:600">작두달인_박씨 <span class="tier-badge tier-diamond" style="font-size:10px">💎</span></div><div style="font-size:12px;color:var(--text-dim)">승률 78% | 연속 12적중</div></div>
+</div>
+<div class="slot-card up" style="margin:0"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자 | 상승 예측</div><div class="slot-dir">"반도체 호재로 내일 갭상"</div></div></div></div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:8px">AI 반대했지만 출격함 ⚔️</div>
+</div>
+<div class="card" onclick="navigate('user-detail')" style="cursor:pointer">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+<div class="league-avatar">🔮</div>
+<div><div style="font-weight:600">신내림_이씨 <span class="tier-badge tier-platinum" style="font-size:10px">✨</span></div><div style="font-size:12px;color:var(--text-dim)">승률 73% | 연속 9적중</div></div>
+</div>
+<div class="slot-card down" style="margin:0"><div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">카카오 | 하락 예측</div><div class="slot-dir">"광고매출 감소 추세"</div></div></div></div>
+</div>
+<div class="section-title">📝 전체 방명록</div>
+<div class="card"><div id="guestbook-list"></div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<input type="text" id="gb-input" maxlength="30" placeholder="방명록 한 줄 남기기 (30자)" style="flex:1;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);font-family:inherit;outline:none">
+<button class="btn btn-primary" style="padding:10px 16px" onclick="addGuestbook()">등록</button>
+</div></div>
+</div>
+
+<!-- 10. AI Agent -->
+<div id="agent" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">🤖 나의 분신 AI</div><div class="actions"><button onclick="navigate('mypage')">←</button></div></div>
+<div class="card" style="text-align:center">
+<div class="agent-avatar">🤖</div>
+<div style="font-size:18px;font-weight:700;margin-bottom:4px">나의 AI 에이전트</div>
+<span class="tier-badge tier-gold" style="margin-bottom:12px">에이전트 등급: A-</span>
+</div>
+<div class="card">
+<div class="card-title">📊 학습 현황</div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>학습 완성도</span><span style="color:var(--accent)">78%</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#1a4fd4)"></div></div>
+<div style="font-size:13px;color:var(--text-dim);margin-top:8px">총 학습 데이터: 142건</div>
+</div>
+<div class="card">
+<div class="card-title">🧠 성향 프로필</div>
+<div style="font-size:14px;line-height:2">
+• 역발상형 투자자<br>• 반도체 섹터 특화<br>• 뉴스 해석 강점<br>• 기술적 분석 약점
+</div>
+</div>
+<div class="card">
+<div class="card-title">⚔️ 최근 AI vs 주인</div>
+<div class="slot-card up" style="border-left-color:var(--gold)">
+<div class="slot-info"><div><div class="slot-name">AI: 하락 → 주인: 상승</div><div class="slot-dir" style="color:var(--up)">→ ✅ 주인 적중!</div></div></div>
+</div>
+<div class="ai-bubble" style="font-size:13px">"주인 관점 채택 학습 완료. 뉴스 기반 호재 판단 가중치를 상향 조정합니다."</div>
+</div>
+<div class="card" style="text-align:center;border-color:rgba(255,215,0,0.2)">
+<div style="font-size:13px;color:var(--gold)">🔒 렌탈 기능</div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:4px">Phase 3에서 오픈 예정</div>
+</div>
+</div>
+
+<!-- 11. MyPage -->
+<div id="mypage" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">👤 마이페이지</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
+<div class="card" style="text-align:center">
+<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#1a4fd4);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:36px">🏆</div>
+<div style="font-size:20px;font-weight:700;margin-bottom:4px">작두마스터_나</div>
+<span class="tier-badge tier-gold">⭐ 골드</span>
+<div class="stats-row" style="margin-top:16px">
+<div class="stat-item"><div class="stat-value">142</div><div class="stat-label">총 점사</div></div>
+<div class="stat-item"><div class="stat-value" style="color:var(--up)">97</div><div class="stat-label">적중</div></div>
+<div class="stat-item"><div class="stat-value" style="color:var(--down)">45</div><div class="stat-label">실패</div></div>
+<div class="stat-item"><div class="stat-value" style="color:var(--gold)">68%</div><div class="stat-label">승률</div></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">📊 종목별 적중률</div>
+<div class="heatmap">
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.7);color:#fff">삼전<br>85%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.5);color:#fff">하닉<br>72%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.3);color:#fff">네이버<br>60%</div>
+<div class="heatmap-cell" style="background:rgba(30,144,255,0.3);color:#fff">카카오<br>45%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.6);color:#fff">테슬라<br>78%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.4);color:#fff">현대차<br>65%</div>
+<div class="heatmap-cell" style="background:rgba(30,144,255,0.2);color:#fff">LG엔<br>40%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.5);color:#fff">셀트<br>70%</div>
+<div class="heatmap-cell" style="background:rgba(255,71,87,0.3);color:#fff">포스코<br>58%</div>
+<div class="heatmap-cell" style="background:rgba(30,144,255,0.4);color:#fff">크래프<br>35%</div>
+</div>
+</div>
+<div class="card" onclick="navigate('agent')" style="cursor:pointer">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🤖</span><div><div style="font-weight:600">내 AI 에이전트</div><div style="font-size:12px;color:var(--text-dim)">학습 완성도 78%</div></div></div>
+<span style="color:var(--text-dim)">→</span>
+</div>
+</div>
+<div class="card" onclick="navigate('tier')" style="cursor:pointer">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🏅</span><div><div style="font-weight:600">티어 시스템</div><div style="font-size:12px;color:var(--text-dim)">골드 → 플래티넘 도전 중</div></div></div>
+<span style="color:var(--text-dim)">→</span>
+</div>
+</div>
+<div class="card">
+<div class="card-title">⚙️ 설정</div>
+<div style="display:flex;flex-direction:column;gap:12px;font-size:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span>🔔 알림 설정</span><span style="color:var(--accent)">ON</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span>🌙 다크모드</span><span style="color:var(--accent)">ON</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span>👤 계정 관리</span><span style="color:var(--text-dim)">→</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span>📋 이용약관</span><span style="color:var(--text-dim)">→</span></div>
+</div>
+</div>
+</div>
+
+<!-- 12. Tier System -->
+<div id="tier" class="screen">
+<div class="top-bar"><div class="logo" style="font-size:16px">🏅 티어 시스템</div><div class="actions"><button onclick="navigate('mypage')">←</button></div></div>
+<div class="card" style="text-align:center">
+<div style="font-size:48px;margin-bottom:8px;animation:tierUp 1s ease">⭐</div>
+<div style="font-size:20px;font-weight:700;color:var(--gold)">골드</div>
+<p style="font-size:13px;color:var(--text-dim);margin-top:4px">플래티넘까지 승률 +7% 필요</p>
+<div class="progress-bar" style="margin-top:12px"><div class="progress-fill" style="width:68%;background:linear-gradient(90deg,var(--gold),#FFA500)"></div></div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:4px">현재 승률 68% / 목표 75%</div>
+</div>
+<div class="card">
+<div class="card-title">🏅 전체 티어</div>
+<table class="tier-table">
+<tr><th>티어</th><th>조건</th><th>검증</th></tr>
+<tr><td><span class="tier-badge tier-iron">🪨 아이언</span></td><td>신규</td><td>방향만</td></tr>
+<tr><td><span class="tier-badge tier-bronze">🥉 브론즈</span></td><td>승률 40%+</td><td>방향만</td></tr>
+<tr><td><span class="tier-badge tier-silver">🥈 실버</span></td><td>승률 50%+</td><td>방향+구간</td></tr>
+<tr style="background:rgba(255,215,0,0.05)"><td><span class="tier-badge tier-gold">⭐ 골드</span></td><td>승률 55%+</td><td>방향+구간</td></tr>
+<tr><td><span class="tier-badge tier-platinum">✨ 플래티넘</span></td><td>승률 60%+</td><td>+인과관계</td></tr>
+<tr><td><span class="tier-badge tier-diamond">💎 다이아</span></td><td>승률 65%+</td><td>+인과관계</td></tr>
+</table>
+</div>
+</div>
+
+<!-- Tab Bar -->
+<nav class="tab-bar">
+<button class="tab-item active" id="tab-home" onclick="navigate('home')"><span class="tab-icon">🏠</span>홈</button>
+<button class="tab-item" id="tab-divine" onclick="navigate('divine')"><span class="tab-icon">🔮</span>점사</button>
+<button class="tab-item" id="tab-league" onclick="navigate('league')"><span class="tab-icon">🏆</span>리그</button>
+<button class="tab-item" id="tab-shrine" onclick="navigate('shrine')"><span class="tab-icon">⛩️</span>신당</button>
+<button class="tab-item" id="tab-my" onclick="navigate('mypage')"><span class="tab-icon">👤</span>MY</button>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>
