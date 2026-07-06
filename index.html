@@ -2,451 +2,1596 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>🔮 운명전쟁 - 당신의 작두 실력을 증명하라</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 결혼 예산</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#03C75A;
+    --green-dark:#02A94C;
+    --green-pale:#E8F8EF;
+    --red:#F04452;
+    --red-pale:#FDEBED;
+    --orange:#FF8A00;
+    --orange-pale:#FFF3E0;
+    --bg:#F5F6F7;
+    --card:#FFFFFF;
+    --ink:#191F28;
+    --ink-2:#4E5968;
+    --ink-3:#8B95A1;
+    --line:#E5E8EB;
+    --radius:12px;
+    --shadow:0 1px 4px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.5;
+    padding-bottom:90px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+  /* ===== Header ===== */
+  header{background:var(--card);border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;height:60px;}
+  header .brand{display:flex;align-items:center;gap:9px;min-width:0;}
+  header .logo{font-size:16px;font-weight:900;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  header .logo .heart{color:#FF8FAE;padding:0 1px;}
+  header .logo .logo-sub{font-weight:600;opacity:0.85;font-size:13.5px;margin-left:1px;}
+  @media(max-width:380px){ header .logo .logo-sub{display:none;} }
+  .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--red);}
+  .dot.on{background:var(--green);}
+  .dot.loading{background:var(--orange);animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  /* ===== Bottom Nav (mobile-first) ===== */
+  nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:50;
+    background:var(--card);border-top:1px solid var(--line);
+  }
+  nav .wrap{display:flex;padding:0;max-width:760px;}
+  nav button{
+    flex:1;background:none;border:none;cursor:pointer;
+    padding:8px 2px 10px;
+    font-family:inherit;font-size:10.5px;font-weight:500;
+    color:var(--ink-3);
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+  }
+  nav button .ico{display:flex;align-items:center;justify-content:center;}
+  nav button .ico svg{width:19px;height:19px;}
+  .verdict .ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .verdict .ico svg{width:20px;height:20px;}
+  .wico{display:inline-flex;vertical-align:-3px;margin-right:2px;}
+  .wico svg{width:14px;height:14px;}
+  nav button.active{color:var(--green);font-weight:700;}
+
+  main{padding-top:16px;}
+  section{display:none;}
+  section.active{display:block;animation:fadein 0.2s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  /* ===== Cards ===== */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:12px;
+    box-shadow:var(--shadow);
+  }
+  .card.clickable{cursor:pointer;transition:transform 0.1s ease;}
+  .card.clickable:active{transform:scale(0.98);}
+  .card-label{font-size:13px;color:var(--ink-3);font-weight:500;margin-bottom:2px;}
+  .card-sub{font-size:12px;color:var(--ink-3);margin-top:6px;}
+  .big-num{font-size:30px;font-weight:900;letter-spacing:-1px;}
+  .mid-num{font-size:20px;font-weight:700;letter-spacing:-0.5px;}
+  .section-title{font-size:15px;font-weight:700;margin:20px 4px 10px;}
+  .section-title:first-child{margin-top:0;}
+
+  /* ===== Hero ===== */
+  .hero{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:26px 20px;
+    margin-bottom:12px;
+    box-shadow:var(--shadow);
+  }
+  .hero .big-num{font-size:36px;}
+  .hero-breakdown{
+    display:flex;gap:0;margin-top:16px;border-top:1px solid var(--line);padding-top:14px;
+  }
+  .hero-breakdown > div{flex:1;}
+  .hero-breakdown > div + div{border-left:1px solid var(--line);padding-left:14px;}
+  .hero-breakdown .k{font-size:11.5px;color:var(--ink-3);}
+  .hero-breakdown .v{font-size:15px;font-weight:700;margin-top:1px;}
+
+  /* ===== Grid ===== */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+
+  /* ===== Gauge ===== */
+  .gauge-track{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;margin-top:12px;}
+  .gauge-fill{height:100%;background:var(--green);border-radius:5px;transition:width 0.4s ease;}
+  .gauge-fill.warn{background:var(--orange);}
+  .gauge-fill.over{background:var(--red);}
+
+  /* ===== Verdict banner ===== */
+  .verdict{
+    border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;
+    font-size:14.5px;font-weight:700;
+    display:flex;align-items:center;gap:10px;
+  }
+  .cat-etc{}
+  .verdict.ok{background:var(--green-pale);color:var(--green-dark);}
+  .verdict.tight{background:var(--orange-pale);color:#C56E00;}
+  .verdict.bad{background:var(--red-pale);color:var(--red);}
+  .verdict .desc{font-size:12px;font-weight:400;margin-top:2px;}
+
+  /* ===== Bars (category spending) ===== */
+  .bar-row{display:flex;align-items:center;gap:10px;padding:7px 0;}
+  .bar-row .name{flex:0 0 66px;font-size:13px;font-weight:500;color:var(--ink-2);}
+  .bar-row .bar-bg{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;}
+  .bar-row .bar{height:100%;background:var(--green);border-radius:4px;transition:width 0.4s ease;}
+  .bar-row .amt{flex:0 0 84px;text-align:right;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
+
+  /* ===== Inputs ===== */
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  label{display:block;font-size:12.5px;color:var(--ink-2);font-weight:500;margin-bottom:6px;}
+  label .hint{color:var(--ink-3);font-weight:400;}
+  input[type=number],input[type=text],select{
+    width:100%;font-family:inherit;font-size:16px;font-weight:500;
+    padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);
+    transition:border-color 0.15s;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--green);}
+  .unit-wrap{position:relative;}
+  .unit-wrap input{padding-right:52px;}
+  .unit-wrap .unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ink-3);font-weight:500;}
+  .inline-result{
+    background:var(--bg);border-radius:10px;padding:12px 14px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:13.5px;margin-top:12px;
+  }
+  .inline-result b{font-size:16px;font-weight:900;}
+
+  /* ===== Buttons ===== */
+  .btn{
+    font-family:inherit;font-size:14px;font-weight:700;
+    padding:12px 18px;border-radius:10px;border:none;cursor:pointer;
+    background:var(--bg);color:var(--ink-2);
+    width:100%;
+  }
+  .btn.primary{background:var(--green);color:#fff;}
+  .btn.primary:active{background:var(--green-dark);}
+  .btn.small{width:auto;padding:7px 13px;font-size:12.5px;border-radius:8px;}
+  .btn.danger-text{background:none;color:var(--red);width:auto;padding:6px 8px;font-size:12.5px;}
+
+  /* ===== List rows ===== */
+  .item-row{
+    display:flex;align-items:center;gap:10px;
+    padding:13px 0;border-bottom:1px solid var(--line);
+  }
+  .item-row:last-child{border-bottom:none;}
+  .item-row .info{flex:1;min-width:0;}
+  .item-row .info .nm{font-size:14.5px;font-weight:700;}
+  .item-row .info .nt{font-size:11.5px;color:var(--ink-3);margin-top:1px;}
+  .item-row .val{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .item-row .val.minus{color:var(--red);}
+  .item-row .val.excluded{color:var(--ink-3);font-weight:400;text-decoration:line-through;}
+
+  /* ===== Toggle ===== */
+  .toggle{
+    position:relative;width:40px;height:24px;flex-shrink:0;
+  }
+  .toggle input{opacity:0;width:0;height:0;}
+  .toggle .tr{
+    position:absolute;inset:0;background:var(--line);border-radius:12px;
+    transition:background 0.15s;cursor:pointer;
+  }
+  .toggle .tr::before{
+    content:'';position:absolute;width:18px;height:18px;border-radius:50%;
+    background:#fff;top:3px;left:3px;transition:transform 0.15s;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked + .tr{background:var(--green);}
+  .toggle input:checked + .tr::before{transform:translateX(16px);}
+
+  /* ===== Edit sheet (modal-like inline) ===== */
+  .edit-panel{
+    background:var(--bg);border-radius:10px;padding:14px;margin-top:8px;
+  }
+  .edit-panel .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .edit-panel .actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;}
+
+  /* ===== Desktop ===== */
+  @media(min-width:761px){
+    body{padding-bottom:40px;padding-top:0;}
+    nav{position:sticky;top:0;bottom:auto;border-top:none;border-bottom:1px solid var(--line);}
+    nav button{flex-direction:row;gap:6px;padding:14px 8px;font-size:13px;}
+    nav button .ico svg{width:16px;height:16px;}
+    .grid-desk2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;}
+  }
+
+  footer{text-align:center;padding:24px;font-size:11px;color:var(--ink-3);}
+
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed;left:50%;bottom:76px;
+    transform:translateX(-50%) translateY(12px);
+    background:var(--ink);color:#fff;
+    font-size:13px;font-weight:600;
+    padding:11px 20px;border-radius:999px;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    z-index:200;box-shadow:0 6px 16px rgba(0,0,0,0.18);
+    max-width:88%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .toast .wico svg{width:14px;height:14px;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{background:var(--green-dark);}
+  .toast.error{background:var(--red);}
+  .toast.warn{background:var(--orange);}
+  @media(min-width:761px){ .toast{bottom:24px;} }
+
+  /* ===== Person input (나/배우자) ===== */
+  .person-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .person-input{
+    display:flex;align-items:stretch;
+    border:1.5px solid var(--line);border-radius:10px;
+    overflow:hidden;background:var(--card);
+    transition:border-color 0.15s;
+  }
+  .person-input:focus-within{border-color:var(--green);}
+  .person-input .p-tag{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:800;padding:0 10px;
+    white-space:nowrap;
+  }
+  .person-input.me .p-tag{background:var(--green-pale);color:var(--green-dark);}
+  .person-input.spouse .p-tag{background:#FCE9F1;color:#D6336C;}
+  .person-input input{
+    flex:1;min-width:0;border:none;background:transparent;
+    padding:12px 4px 12px 10px;font-size:15px;font-weight:600;font-family:inherit;color:var(--ink);
+  }
+  .person-input input:focus{outline:none;}
+  .person-input .p-unit{
+    flex:0 0 auto;display:flex;align-items:center;
+    font-size:12px;color:var(--ink-3);padding-right:10px;font-weight:500;
+  }
+  .cat-subtotal{
+    display:flex;justify-content:flex-end;
+    font-size:12px;color:var(--ink-3);margin-top:6px;padding:0 2px;
+  }
+  .cat-subtotal b{color:var(--ink-2);font-weight:700;margin-left:4px;}
+
+  /* ===== Roadmap: timeline ===== */
+  .view-btn.active{background:var(--ink);color:#fff;}
+  .tl-item{
+    display:flex;gap:14px;position:relative;
+    padding:0 0 4px 0;
+  }
+  .tl-rail{display:flex;flex-direction:column;align-items:center;flex:0 0 22px;}
+  .tl-dot{
+    width:22px;height:22px;border-radius:50%;flex-shrink:0;
+    border:2.5px solid var(--line);background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:#fff;cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .tl-item.done .tl-dot{background:var(--green);border-color:var(--green);animation:pop 0.3s ease;}
+  .tl-item.overdue .tl-dot{border-color:var(--red);}
+  .tl-item.today-marker .tl-dot{background:var(--ink);border-color:var(--ink);width:12px;height:12px;margin:5px;}
+  @keyframes pop{0%{transform:scale(0.6);}60%{transform:scale(1.25);}100%{transform:scale(1);}}
+  .tl-line{width:2.5px;flex:1;background:var(--line);min-height:18px;}
+  .tl-item.done .tl-line{background:var(--green);}
+  .tl-body{flex:1;padding-bottom:18px;min-width:0;}
+  .tl-item:last-child .tl-body{padding-bottom:2px;}
+  .tl-item:last-child .tl-line{display:none;}
+  .tl-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;}
+  .tl-name{font-size:14.5px;font-weight:700;transition:all 0.2s;}
+  .tl-item.done .tl-name{color:var(--ink-3);text-decoration:line-through;font-weight:500;}
+  .tl-dbadge{
+    font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;
+    background:var(--bg);color:var(--ink-2);white-space:nowrap;
+  }
+  .tl-item.overdue .tl-dbadge{background:var(--red-pale);color:var(--red);}
+  .tl-item.soon .tl-dbadge{background:var(--orange-pale);color:#C56E00;}
+  .tl-item.done .tl-dbadge{background:var(--green-pale);color:var(--green-dark);}
+  .tl-date{font-size:11.5px;color:var(--ink-3);margin-top:2px;}
+  .tl-memo{font-size:12px;color:var(--ink-2);margin-top:3px;}
+  .today-label{font-size:11px;font-weight:900;color:var(--ink);letter-spacing:0.5px;}
+  .tl-past-toggle{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;margin-bottom:8px;
+    background:var(--bg);border-radius:10px;
+    font-size:13px;font-weight:700;color:var(--ink-2);
+    cursor:pointer;
+  }
+  .tl-past-sub{font-size:11.5px;font-weight:500;color:var(--ink-3);}
+
+  /* ===== Roadmap: calendar ===== */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .cal-dow{font-size:10.5px;font-weight:700;color:var(--ink-3);text-align:center;padding:4px 0;}
+  .cal-cell{
+    aspect-ratio:1;border-radius:8px;padding:3px;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    font-size:12px;font-weight:600;cursor:pointer;position:relative;
+    border:1.5px solid transparent;
+  }
+  .cal-cell:hover{background:var(--bg);}
+  .cal-cell.other{color:var(--line);}
+  .cal-cell.today{border-color:var(--ink);}
+  .cal-cell.selected{background:var(--green-pale);}
+  .cal-cell.wedding{background:#FCE9F1;}
+  .cal-cell .d{line-height:1.4;}
+  .cal-dots{display:flex;gap:2px;margin-top:2px;}
+  .cal-dots i{width:5px;height:5px;border-radius:50%;background:var(--green);display:block;}
+  .cal-dots i.overdue{background:var(--red);}
+  .cal-dots i.done{background:#C9CED6;}
+
+  /* ===== Wedding progress road ===== */
+  .progress-road{position:relative;height:200px;display:flex;justify-content:center;}
+  .road-track{
+    position:absolute;left:50%;top:0;bottom:0;width:6px;
+    transform:translateX(-50%);
+    background:repeating-linear-gradient(to bottom, var(--line) 0 8px, transparent 8px 14px);
+    border-radius:3px;
+  }
+  .road-char{
+    position:absolute;left:50%;top:4%;
+    transform:translate(-50%,-50%);
+    transition:top 0.8s cubic-bezier(.34,1.4,.5,1);
+    z-index:2;
+  }
+  .road-char.walking .leg-l{animation:legswing 0.35s ease-in-out infinite alternate;}
+  .road-char.walking .leg-r{animation:legswing2 0.35s ease-in-out infinite alternate;}
+  .road-char.walking .leg-l2{animation:legswing 0.35s ease-in-out infinite alternate;}
+  .road-char.walking .leg-r2{animation:legswing2 0.35s ease-in-out infinite alternate;}
+  @keyframes legswing{0%{transform:rotate(-16deg);}100%{transform:rotate(16deg);}}
+  @keyframes legswing2{0%{transform:rotate(16deg);}100%{transform:rotate(-16deg);}}
+  .road-labels{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);font-weight:600;margin-top:6px;}
+  .road-labels #roadPercent{color:var(--green-dark);font-weight:800;}
+
+  /* ===== Celebration overlay ===== */
+  .celebrate-overlay{
+    position:fixed;inset:0;z-index:1000;
+    background:linear-gradient(180deg,#FFF6E9 0%,#FDEEF3 55%,#EAF6EE 100%);
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    overflow:hidden;padding:24px;text-align:center;
+  }
+  .celebrate-overlay.show{display:flex;}
+  .celebrate-close{
+    position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;
+    background:rgba(255,255,255,0.8);border:none;font-size:18px;font-weight:700;color:var(--ink-2);
+    cursor:pointer;z-index:5;
+  }
+  .celebrate-bell{font-size:40px;animation:bellswing 0.6s ease-in-out infinite;transform-origin:top center;}
+  @keyframes bellswing{0%,100%{transform:rotate(-14deg);}50%{transform:rotate(14deg);}}
+  .celebrate-couple{display:flex;align-items:flex-end;gap:2px;margin:10px 0 6px;position:relative;z-index:3;}
+  .celebrate-title{font-size:19px;font-weight:900;color:var(--ink);margin-top:6px;position:relative;z-index:3;}
+  .celebrate-sub{font-size:13px;color:var(--ink-2);margin-top:6px;position:relative;z-index:3;}
+  .celebrate-hint{font-size:11.5px;color:var(--ink-3);margin-top:22px;position:relative;z-index:3;}
+  .guest-row{display:flex;justify-content:center;gap:14px;margin:6px 0;position:relative;z-index:2;}
+  .guest{display:flex;flex-direction:column;align-items:center;animation:guestcheer 0.9s ease-in-out infinite;}
+  .guest:nth-child(2n){animation-delay:0.15s;}
+  .guest:nth-child(3n){animation-delay:0.3s;}
+  @keyframes guestcheer{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  .confetti-piece{
+    position:absolute;top:-20px;width:8px;height:14px;opacity:0.9;
+    animation:confettifall linear infinite;
+  }
+  @keyframes confettifall{
+    0%{transform:translateY(-20px) rotate(0deg);}
+    100%{transform:translateY(110vh) rotate(540deg);}
+  }
+</style>
 </head>
 <body>
-<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="테마 전환">🌙</button>
-<div id="confetti" class="confetti-container"></div>
 
-<!-- 1. Splash -->
-<div id="splash" class="screen active">
-<div class="splash-screen">
-<div class="splash-logo">🔮</div>
-<div class="splash-title">운명<span>전쟁</span></div>
-<p class="splash-tagline">당신의 작두 실력을 증명하라</p>
-<div class="social-login">
-<button class="social-btn social-kakao" onclick="enterApp()">💬 카카오로 시작하기</button>
-<button class="social-btn social-google" onclick="enterApp()">G 구글로 시작하기</button>
-<button class="social-btn social-apple" onclick="enterApp()"> Apple로 시작하기</button>
-</div>
-</div>
-</div>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="22" cy="22" r="21" fill="#E8F8EF"/>
+        <ellipse cx="15" cy="33" rx="7" ry="5" fill="#6B8E6B"/>
+        <ellipse cx="29" cy="32" rx="7" ry="5" fill="#D6336C"/>
+        <circle cx="15" cy="24" r="7.4" fill="#FFDFC0"/>
+        <circle cx="29" cy="22" r="7.4" fill="#FFDFC0"/>
+        <path d="M8 22 Q9 14 15 14 Q21 14 22 21 Q17 18 14 19 Q10 20 8 22 Z" fill="#4A3222"/>
+        <path d="M22 20 Q23 12 29 12 Q35.5 12 36 20 Q30.5 17 27.5 18.5 Q24.5 19.5 22 20 Z" fill="#B5651D"/>
+        <circle cx="12.6" cy="25" r="0.9" fill="#2C3639"/>
+        <circle cx="17.4" cy="25" r="0.9" fill="#2C3639"/>
+        <circle cx="26.6" cy="23" r="0.9" fill="#2C3639"/>
+        <circle cx="31.4" cy="23" r="0.9" fill="#2C3639"/>
+        <ellipse cx="12" cy="27.6" rx="1.6" ry="1" fill="#F5A6A6"/>
+        <ellipse cx="18" cy="27.6" rx="1.6" ry="1" fill="#F5A6A6"/>
+        <ellipse cx="26" cy="25.6" rx="1.6" ry="1" fill="#F5A6A6"/>
+        <ellipse cx="32" cy="25.6" rx="1.6" ry="1" fill="#F5A6A6"/>
+        <path d="M15 28 Q15 29.4 16.6 29.4 Q18.2 29.4 18.2 28" stroke="#2C3639" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M25.8 26 Q25.8 27.4 27.4 27.4 Q29 27.4 29 26" stroke="#2C3639" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <circle cx="20" cy="30" r="1.6" fill="#FFDFC0"/>
+        <path d="M21 9 C19.5 6.8 15.8 7.6 15.8 10.4 C15.8 12.8 21 16.5 21 16.5 C21 16.5 26.2 12.8 26.2 10.4 C26.2 7.6 22.5 6.8 21 9 Z" fill="#F04452"/>
+      </svg>
+      <div class="logo">도비 <span class="heart">♥</span> 엥주<span class="logo-sub">의 결혼식 준비</span></div>
+    </div>
+    <div class="sync"><span class="dot" id="syncDot"></span><span id="syncText">연결 안됨</span></div>
+  </div>
+</header>
 
-<!-- 2. Home -->
-<div id="home" class="screen">
-<div class="top-bar">
-<div class="logo">🔮 운명<span>전쟁</span></div>
-<div class="actions"><button>🔔</button><button onclick="navigate('mypage')">👤</button></div>
-</div>
-<div class="card">
-<div class="card-title">📊 내 작두 현황</div>
-<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-<span class="tier-badge tier-gold">⭐ 골드</span>
-<span style="font-size:12px;color:var(--text-dim)">다음 티어까지 승률 +7% 필요</span>
-</div>
-<div class="stats-row">
-<div class="stat-item"><div class="stat-value" style="color:var(--up)">68%</div><div class="stat-label">승률</div></div>
-<div class="stat-item"><div class="stat-value" style="color:var(--gold)">5</div><div class="stat-label">연속적중</div></div>
-<div class="stat-item"><div class="stat-value">#142</div><div class="stat-label">랭킹</div></div>
-<div class="stat-item"><div class="stat-value">85</div><div class="stat-label">작두력</div></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title">⚔️ 활성 슬롯 (3/5)</div>
-<div class="slot-card up" onclick="showResult()">
-<div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자</div><div class="slot-dir">상승 예측</div></div></div>
-<div class="slot-meta"><div class="slot-change">+2.3%</div><div class="slot-time">D-1</div></div>
-</div>
-<div class="slot-card down">
-<div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">SK하이닉스</div><div class="slot-dir">하락 예측</div></div></div>
-<div class="slot-meta"><div class="slot-change">-1.0%</div><div class="slot-time">D-3</div></div>
-</div>
-<div class="slot-card up">
-<div class="slot-info"><span class="slot-icon">⛰️</span><div><div class="slot-name">NAVER</div><div class="slot-dir">상승 예측</div></div></div>
-<div class="slot-meta"><div class="slot-change">+5.0%</div><div class="slot-time">D-15</div></div>
-</div>
-<button class="add-slot" onclick="navigate('divine')">+ 새 점사 시작하기</button>
-</div>
-<div class="card" onclick="navigate('league')">
-<div class="card-title">🏆 오늘의 리그 현황</div>
-<div style="display:flex;gap:8px;margin-bottom:8px">
-<span class="tag" style="font-size:11px">🏆 정규리그</span>
-<span class="tag" style="font-size:11px;background:rgba(0,206,209,0.1);color:#00ced1;border-color:rgba(0,206,209,0.2)">👑 청개구리</span>
-</div>
-<div class="league-card" style="margin:0">
-<div class="league-rank top1">1</div>
-<div class="league-avatar">💎</div>
-<div class="league-info"><div class="league-name">작두달인_박씨</div><div class="league-stats">연속12적중</div></div>
-<div class="league-winrate" style="color:var(--up)">78%</div>
-</div>
-</div>
-</div>
-
-<!-- 3. Divine - Search -->
-<div id="divine" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">🔮 점사 - 종목 선택</div>
-<div class="actions"><button onclick="navigate('home')">✕</button></div>
-</div>
-<div class="search-box">
-<span class="search-icon">🔍</span>
-<input type="text" id="stock-search-input" placeholder="종목명 또는 코드 검색">
-</div>
-<div class="tag-row">
-<span class="tag" onclick="selectQuickStock('삼성전자')">삼성전자</span>
-<span class="tag" onclick="selectQuickStock('SK하이닉스')">SK하이닉스</span>
-<span class="tag" onclick="selectQuickStock('테슬라')">테슬라</span>
-<span class="tag" onclick="selectQuickStock('NAVER')">NAVER</span>
-<span class="tag" onclick="selectQuickStock('카카오')">카카오</span>
-</div>
-<div class="section-title">📈 전체 종목</div>
-<div id="stock-search-results"></div>
-</div>
-
-<!-- 3-2. Slot Type -->
-<div id="divine-slot" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">🔮 슬롯 타입 선택</div>
-<div class="actions"><button onclick="navigate('divine')">←</button></div>
-</div>
-<div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div><span id="selected-stock-name" style="font-weight:700;font-size:16px">삼성전자</span></div>
-<div id="selected-stock-price" style="font-weight:700;font-size:18px;color:var(--accent)">₩82,300</div>
-</div>
-<div class="mini-chart" id="stock-mini-chart"></div>
-</div>
-<div class="section-title">⏱️ 슬롯 타입</div>
-<div class="card slot-type-btn" onclick="selectSlotType('short')" style="cursor:pointer">
-<div style="display:flex;align-items:center;gap:12px">
-<span style="font-size:24px">⚡</span>
-<div><div style="font-weight:600">단타 (D+1)</div><div style="font-size:12px;color:var(--text-dim)">내일 장마감 기준 검증</div></div>
-</div>
-</div>
-<div class="card slot-type-btn" onclick="selectSlotType('swing')" style="cursor:pointer">
-<div style="display:flex;align-items:center;gap:12px">
-<span style="font-size:24px">⏳</span>
-<div><div style="font-weight:600">스윙 (D+3~5)</div><div style="font-size:12px;color:var(--text-dim)">3~5일 후 검증</div></div>
-</div>
-</div>
-<div class="card slot-type-btn" onclick="selectSlotType('long')" style="cursor:pointer">
-<div style="display:flex;align-items:center;gap:12px">
-<span style="font-size:24px">⛰️</span>
-<div><div style="font-weight:600">장기 (D+20)</div><div style="font-size:12px;color:var(--text-dim)">20일 후 검증</div></div>
-</div>
-</div>
-<p style="text-align:center;font-size:12px;color:var(--text-dim);margin:12px 0">잔여 슬롯: 2/5</p>
-<button class="btn btn-primary btn-full" onclick="goToOpinion()">다음 →</button>
-</div>
-
-<!-- 3-3. Opinion -->
-<div id="divine-opinion" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">🔮 관점 입력</div>
-<div class="actions"><button onclick="navigate('divine-slot')">←</button></div>
-</div>
-<div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-<span id="opinion-stock-name" style="font-weight:700">삼성전자 (005930)</span>
-<span id="opinion-stock-price" style="font-weight:700;color:var(--accent)">₩82,300</span>
-</div>
-<div id="opinion-slot-type" style="font-size:13px;color:var(--text-dim)">슬롯: ⚡단타</div>
-</div>
-<div class="section-title">💭 당신의 관점을 적어주세요</div>
-<textarea id="opinion-text" class="opinion-box" placeholder="예: 반도체 호재 떴음, 내일 무조건 상승"></textarea>
-<div class="section-title">빠른 키워드</div>
-<div class="tag-row">
-<span class="tag-keyword" onclick="toggleKeyword(this)">호재</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">악재</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">선반영</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">세력</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">수급</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">실적</span>
-<span class="tag-keyword" onclick="toggleKeyword(this)">역발상</span>
-</div>
-<button class="btn btn-gold btn-full" onclick="goToAIPreview()" style="margin-top:16px">🔮 AI 프리뷰 요청</button>
-</div>
-
-<!-- 4. AI Preview -->
-<div id="ai-preview" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">🤖 AI 분석 프리뷰</div>
-<div class="actions"><button onclick="navigate('divine-opinion')">←</button></div>
-</div>
-<div class="ai-bubble">
-<p>"당신의 논리는 <b style="color:var(--accent)">뉴스 기반 호재</b> 성향입니다.</p>
-<p style="margin-top:8px">과거 데이터상 이 정도 뉴스 강도는 <b style="color:var(--up)">사후 재료 소멸</b>로 하락할 확률이 <b style="color:var(--up)">65%</b>입니다.</p>
-<p style="margin-top:8px">그래도 출격하시겠습니까?"</p>
-</div>
-<div class="card">
-<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
-<span>AI 판단</span><span>하락 65% / 상승 35%</span>
-</div>
-<div class="progress-bar"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,var(--down),var(--accent))"></div></div>
-</div>
-<div class="card" style="font-size:13px;color:var(--text-dim)">
-<span>💬 내 의견: </span><span id="ai-opinion-echo" style="color:var(--text)">반도체 호재 기대</span>
-</div>
-<div class="section-title">방향 선택</div>
-<div class="dir-buttons">
-<button class="btn btn-up" onclick="selectDirection('up')" style="padding:16px;font-size:16px">🔴 상승</button>
-<button class="btn btn-down" onclick="selectDirection('down')" style="padding:16px;font-size:16px">🔵 하락</button>
-</div>
-<div id="range-section" style="display:none">
-<div class="section-title">예상 구간 (골드 이상)</div>
-<div class="range-buttons">
-<button class="range-btn" onclick="selectRange('1-3')">+1~3%</button>
-<button class="range-btn" onclick="selectRange('3-5')">+3~5%</button>
-<button class="range-btn" onclick="selectRange('5+')">+5% 이상</button>
-</div>
-</div>
-<button class="btn btn-primary btn-full" onclick="deploy()" style="margin-top:20px;padding:16px;font-size:16px">⚔️ 출격! (최종 제출)</button>
-<button class="btn btn-outline btn-full" onclick="navigate('divine-opinion')" style="margin-top:8px">← 다시 생각해볼게</button>
-</div>
-
-<!-- 5. Deploy Complete -->
-<div id="deploy-complete" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">⚔️ 출격 완료!</div>
-<div class="actions"><button onclick="navigate('home')">✕</button></div>
-</div>
-<div class="charm-card">
-<div class="charm-symbol">🔮</div>
-<div class="charm-text" id="charm-stock">삼성전자</div>
-<div class="charm-detail" id="charm-dir">상승 점사 완료</div>
-<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,215,0,0.2)">
-<p style="font-size:11px;color:var(--gold)">2026.05.27 출격</p>
-<p style="font-size:11px;color:var(--text-dim);margin-top:4px" id="charm-share-text">삼성전자 내일 상승 점사 완료 🔮</p>
-</div>
-</div>
-<div class="share-row">
-<button class="share-btn share-kakao">💬 카카오톡 공유</button>
-<button class="share-btn share-insta">📷 인스타 공유</button>
-</div>
-<button class="btn btn-outline btn-full" onclick="navigate('home')" style="margin-top:20px">홈으로 돌아가기</button>
-</div>
-
-<!-- 6. Result -->
-<div id="result" class="screen">
-<div class="top-bar">
-<div class="logo" style="font-size:16px">📊 점사 결과</div>
-<div class="actions"><button onclick="navigate('home')">✕</button></div>
-</div>
-<div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<div><span style="font-weight:700">삼성전자</span><span style="color:var(--text-dim);font-size:12px;margin-left:8px">⚡단타 | 2026.05.26</span></div>
-</div>
-<div style="margin-bottom:12px">
-<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px">내 예측: 🔴 상승 (+3~5%)</div>
-<div style="font-size:13px;color:var(--text-dim)">실제 결과: <span style="color:var(--up);font-weight:700">🔴 +4.2%</span></div>
-</div>
-<div style="text-align:center;padding:16px 0">
-<span class="result-badge result-hit" style="font-size:20px;animation:pulse 1.5s infinite">✅ 적중! 방향 ✓ 구간 ✓</span>
-</div>
-</div>
-<div class="card">
-<div class="card-title">🤖 AI 페르소나 학습 리포트</div>
-<div class="ai-bubble" style="margin:0">
-<p>"주인님은 반도체 뉴스에 강한 확신을 보이며, AI 반대 의견도 무시하는 <b style="color:var(--gold)">역발상 성향</b>입니다.</p>
-<p style="margin-top:8px">이번 적중으로 해당 바이어스 가중치를 <b style="color:var(--up)">+12% 상향</b>합니다."</p>
-</div>
-</div>
-<div class="card" style="text-align:center">
-<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px">획득 포인트</div>
-<div style="font-size:28px;font-weight:900;color:var(--gold)">+85 작두력</div>
-</div>
-<div class="share-row">
-<button class="share-btn share-kakao">💬 결과 카드 공유</button>
-<button class="share-btn share-insta">📷 인스타 공유</button>
-</div>
-<button class="btn btn-primary btn-full" onclick="navigate('home')" style="margin-top:12px">홈으로</button>
-</div>
-
-<!-- 7. League -->
-<div id="league" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">🏆 리그 랭킹</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
-<div class="tab-switch">
-<button class="active" onclick="switchLeagueTab('regular')">🏆 정규 리그</button>
-<button onclick="switchLeagueTab('frog')">👑 청개구리 리그</button>
-</div>
-<div id="league-list"></div>
-</div>
-
-<!-- 8. User Detail -->
-<div id="user-detail" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">👤 유저 카드</div><div class="actions"><button onclick="navigate('league')">←</button></div></div>
-<div class="card" style="text-align:center">
-<div style="font-size:48px;margin-bottom:8px">💎</div>
-<div style="font-size:18px;font-weight:700">작두달인_박씨</div>
-<span class="tier-badge tier-diamond" style="margin-top:8px">💎 DIAMOND</span>
-<div class="stats-row" style="margin-top:16px">
-<div class="stat-item"><div class="stat-value" style="color:var(--up)">78%</div><div class="stat-label">승률</div></div>
-<div class="stat-item"><div class="stat-value" style="color:var(--gold)">12</div><div class="stat-label">연속적중</div></div>
-<div class="stat-item"><div class="stat-value">#1</div><div class="stat-label">랭킹</div></div>
-<div class="stat-item"><div class="stat-value">542</div><div class="stat-label">작두력</div></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title">최근 점사</div>
-<div class="slot-card up"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자</div><div class="slot-dir">상승 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">+4.2%</div></div></div>
-<div class="slot-card up"><div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">테슬라</div><div class="slot-dir">상승 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">+6.1%</div></div></div>
-<div class="slot-card down"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">카카오</div><div class="slot-dir">하락 예측 → ✅ 적중</div></div></div><div class="slot-meta"><div class="slot-change">-2.3%</div></div></div>
-</div>
-<div class="card">
-<div class="card-title">📝 신당 방명록</div>
-<div id="user-guestbook">
-<div class="gb-item"><div class="gb-avatar">😎</div><div class="gb-content"><div class="gb-author">무당조수_A</div><div class="gb-text">이 집 작두 잘 타네 🔥</div></div></div>
-<div class="gb-item"><div class="gb-avatar">🐸</div><div class="gb-content"><div class="gb-author">한강러버</div><div class="gb-text">한강물 차갑다 인간아 🥶</div></div></div>
-<div class="gb-item"><div class="gb-avatar">🙏</div><div class="gb-content"><div class="gb-author">주식고수</div><div class="gb-text">무당 그 자체 ㄷㄷ</div></div></div>
-</div>
-<div style="display:flex;gap:8px;margin-top:12px">
-<input type="text" maxlength="30" placeholder="방명록 한 줄 (30자)" style="flex:1;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);font-family:inherit;outline:none">
-<button class="btn btn-primary" style="padding:10px 16px">등록</button>
-</div>
-</div>
-</div>
-
-<!-- 9. Shrine -->
-<div id="shrine" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">⛩️ 신당</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
-<div class="card" style="text-align:center">
-<div style="font-size:48px;margin-bottom:8px">⛩️</div>
-<div style="font-size:18px;font-weight:700;margin-bottom:4px">신당 방명록</div>
-<p style="font-size:13px;color:var(--text-dim)">작두의 신이 지켜보고 있다</p>
-</div>
-<div class="section-title">🔥 인기 점사 카드</div>
-<div class="card" onclick="navigate('user-detail')" style="cursor:pointer">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-<div class="league-avatar">💎</div>
-<div><div style="font-weight:600">작두달인_박씨 <span class="tier-badge tier-diamond" style="font-size:10px">💎</span></div><div style="font-size:12px;color:var(--text-dim)">승률 78% | 연속 12적중</div></div>
-</div>
-<div class="slot-card up" style="margin:0"><div class="slot-info"><span class="slot-icon">⚡</span><div><div class="slot-name">삼성전자 | 상승 예측</div><div class="slot-dir">"반도체 호재로 내일 갭상"</div></div></div></div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:8px">AI 반대했지만 출격함 ⚔️</div>
-</div>
-<div class="card" onclick="navigate('user-detail')" style="cursor:pointer">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-<div class="league-avatar">🔮</div>
-<div><div style="font-weight:600">신내림_이씨 <span class="tier-badge tier-platinum" style="font-size:10px">✨</span></div><div style="font-size:12px;color:var(--text-dim)">승률 73% | 연속 9적중</div></div>
-</div>
-<div class="slot-card down" style="margin:0"><div class="slot-info"><span class="slot-icon">⏳</span><div><div class="slot-name">카카오 | 하락 예측</div><div class="slot-dir">"광고매출 감소 추세"</div></div></div></div>
-</div>
-<div class="section-title">📝 전체 방명록</div>
-<div class="card"><div id="guestbook-list"></div>
-<div style="display:flex;gap:8px;margin-top:12px">
-<input type="text" id="gb-input" maxlength="30" placeholder="방명록 한 줄 남기기 (30자)" style="flex:1;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);font-family:inherit;outline:none">
-<button class="btn btn-primary" style="padding:10px 16px" onclick="addGuestbook()">등록</button>
-</div></div>
-</div>
-
-<!-- 10. AI Agent -->
-<div id="agent" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">🤖 나의 분신 AI</div><div class="actions"><button onclick="navigate('mypage')">←</button></div></div>
-<div class="card" style="text-align:center">
-<div class="agent-avatar">🤖</div>
-<div style="font-size:18px;font-weight:700;margin-bottom:4px">나의 AI 에이전트</div>
-<span class="tier-badge tier-gold" style="margin-bottom:12px">에이전트 등급: A-</span>
-</div>
-<div class="card">
-<div class="card-title">📊 학습 현황</div>
-<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>학습 완성도</span><span style="color:var(--accent)">78%</span></div>
-<div class="progress-bar"><div class="progress-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#1a4fd4)"></div></div>
-<div style="font-size:13px;color:var(--text-dim);margin-top:8px">총 학습 데이터: 142건</div>
-</div>
-<div class="card">
-<div class="card-title">🧠 성향 프로필</div>
-<div style="font-size:14px;line-height:2">
-• 역발상형 투자자<br>• 반도체 섹터 특화<br>• 뉴스 해석 강점<br>• 기술적 분석 약점
-</div>
-</div>
-<div class="card">
-<div class="card-title">⚔️ 최근 AI vs 주인</div>
-<div class="slot-card up" style="border-left-color:var(--gold)">
-<div class="slot-info"><div><div class="slot-name">AI: 하락 → 주인: 상승</div><div class="slot-dir" style="color:var(--up)">→ ✅ 주인 적중!</div></div></div>
-</div>
-<div class="ai-bubble" style="font-size:13px">"주인 관점 채택 학습 완료. 뉴스 기반 호재 판단 가중치를 상향 조정합니다."</div>
-</div>
-<div class="card" style="text-align:center;border-color:rgba(255,215,0,0.2)">
-<div style="font-size:13px;color:var(--gold)">🔒 렌탈 기능</div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:4px">Phase 3에서 오픈 예정</div>
-</div>
-</div>
-
-<!-- 11. MyPage -->
-<div id="mypage" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">👤 마이페이지</div><div class="actions"><button onclick="navigate('home')">←</button></div></div>
-<div class="card" style="text-align:center">
-<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#1a4fd4);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:36px">🏆</div>
-<div style="font-size:20px;font-weight:700;margin-bottom:4px">작두마스터_나</div>
-<span class="tier-badge tier-gold">⭐ 골드</span>
-<div class="stats-row" style="margin-top:16px">
-<div class="stat-item"><div class="stat-value">142</div><div class="stat-label">총 점사</div></div>
-<div class="stat-item"><div class="stat-value" style="color:var(--up)">97</div><div class="stat-label">적중</div></div>
-<div class="stat-item"><div class="stat-value" style="color:var(--down)">45</div><div class="stat-label">실패</div></div>
-<div class="stat-item"><div class="stat-value" style="color:var(--gold)">68%</div><div class="stat-label">승률</div></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title">📊 종목별 적중률</div>
-<div class="heatmap">
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.7);color:#fff">삼전<br>85%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.5);color:#fff">하닉<br>72%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.3);color:#fff">네이버<br>60%</div>
-<div class="heatmap-cell" style="background:rgba(30,144,255,0.3);color:#fff">카카오<br>45%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.6);color:#fff">테슬라<br>78%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.4);color:#fff">현대차<br>65%</div>
-<div class="heatmap-cell" style="background:rgba(30,144,255,0.2);color:#fff">LG엔<br>40%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.5);color:#fff">셀트<br>70%</div>
-<div class="heatmap-cell" style="background:rgba(255,71,87,0.3);color:#fff">포스코<br>58%</div>
-<div class="heatmap-cell" style="background:rgba(30,144,255,0.4);color:#fff">크래프<br>35%</div>
-</div>
-</div>
-<div class="card" onclick="navigate('agent')" style="cursor:pointer">
-<div style="display:flex;align-items:center;justify-content:space-between">
-<div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🤖</span><div><div style="font-weight:600">내 AI 에이전트</div><div style="font-size:12px;color:var(--text-dim)">학습 완성도 78%</div></div></div>
-<span style="color:var(--text-dim)">→</span>
-</div>
-</div>
-<div class="card" onclick="navigate('tier')" style="cursor:pointer">
-<div style="display:flex;align-items:center;justify-content:space-between">
-<div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🏅</span><div><div style="font-weight:600">티어 시스템</div><div style="font-size:12px;color:var(--text-dim)">골드 → 플래티넘 도전 중</div></div></div>
-<span style="color:var(--text-dim)">→</span>
-</div>
-</div>
-<div class="card">
-<div class="card-title">⚙️ 설정</div>
-<div style="display:flex;flex-direction:column;gap:12px;font-size:14px">
-<div style="display:flex;justify-content:space-between;align-items:center"><span>🔔 알림 설정</span><span style="color:var(--accent)">ON</span></div>
-<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheme()"><span>🌙 다크모드</span><span id="darkmode-status" style="color:var(--accent)">ON</span></div>
-<div style="display:flex;justify-content:space-between;align-items:center"><span>👤 계정 관리</span><span style="color:var(--text-dim)">→</span></div>
-<div style="display:flex;justify-content:space-between;align-items:center"><span>📋 이용약관</span><span style="color:var(--text-dim)">→</span></div>
-</div>
-</div>
-</div>
-
-<!-- 12. Tier System -->
-<div id="tier" class="screen">
-<div class="top-bar"><div class="logo" style="font-size:16px">🏅 티어 시스템</div><div class="actions"><button onclick="navigate('mypage')">←</button></div></div>
-<div class="card" style="text-align:center">
-<div style="font-size:48px;margin-bottom:8px;animation:tierUp 1s ease">⭐</div>
-<div style="font-size:20px;font-weight:700;color:var(--gold)">골드</div>
-<p style="font-size:13px;color:var(--text-dim);margin-top:4px">플래티넘까지 승률 +7% 필요</p>
-<div class="progress-bar" style="margin-top:12px"><div class="progress-fill" style="width:68%;background:linear-gradient(90deg,var(--gold),#FFA500)"></div></div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:4px">현재 승률 68% / 목표 75%</div>
-</div>
-<div class="card">
-<div class="card-title">🏅 전체 티어</div>
-<table class="tier-table">
-<tr><th>티어</th><th>조건</th><th>검증</th></tr>
-<tr><td><span class="tier-badge tier-iron">🪨 아이언</span></td><td>신규</td><td>방향만</td></tr>
-<tr><td><span class="tier-badge tier-bronze">🥉 브론즈</span></td><td>승률 40%+</td><td>방향만</td></tr>
-<tr><td><span class="tier-badge tier-silver">🥈 실버</span></td><td>승률 50%+</td><td>방향+구간</td></tr>
-<tr style="background:rgba(255,215,0,0.05)"><td><span class="tier-badge tier-gold">⭐ 골드</span></td><td>승률 55%+</td><td>방향+구간</td></tr>
-<tr><td><span class="tier-badge tier-platinum">✨ 플래티넘</span></td><td>승률 60%+</td><td>+인과관계</td></tr>
-<tr><td><span class="tier-badge tier-diamond">💎 다이아</span></td><td>승률 65%+</td><td>+인과관계</td></tr>
-</table>
-</div>
-</div>
-
-<!-- Tab Bar -->
-<nav class="tab-bar">
-<button class="tab-item active" id="tab-home" onclick="navigate('home')"><span class="tab-icon">🏠</span>홈</button>
-<button class="tab-item" id="tab-divine" onclick="navigate('divine')"><span class="tab-icon">🔮</span>점사</button>
-<button class="tab-item" id="tab-league" onclick="navigate('league')"><span class="tab-icon">🏆</span>리그</button>
-<button class="tab-item" id="tab-shrine" onclick="navigate('shrine')"><span class="tab-icon">⛩️</span>신당</button>
-<button class="tab-item" id="tab-my" onclick="navigate('mypage')"><span class="tab-icon">👤</span>MY</button>
+<nav>
+  <div class="wrap">
+    <button class="tab-btn active" data-tab="home"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L10 3l7 6.5"/><path d="M5 8.5V17h10V8.5"/><path d="M8 17v-5h4v5"/></svg></span>홈</button>
+    <button class="tab-btn" data-tab="roadmap"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="14" height="12" rx="2"/><path d="M3 8.5h14"/><path d="M7 2.5v3M13 2.5v3"/></svg></span>일정</button>
+    <button class="tab-btn" data-tab="assets"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="14" height="10" rx="2"/><path d="M3 8.5h14"/><circle cx="13.3" cy="11.7" r="0.9" fill="currentColor" stroke="none"/></svg></span>자산</button>
+    <button class="tab-btn" data-tab="house"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3.4"/><path d="M9.3 9.3L17 17M14 14l1.6-1.6M16 16l1.6-1.6"/></svg></span>집 예산</button>
+    <button class="tab-btn" data-tab="spend"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span>결혼 지출</button>
+    <button class="tab-btn" data-tab="income"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16V10M10 16V4M16 16v-7"/></svg></span>소득·고정비</button>
+    <button class="tab-btn" data-tab="loan"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8L10 3l7 5"/><path d="M4 8h12v7H4z"/><path d="M2 17h16"/><path d="M7 8v7M13 8v7"/></svg></span>대출</button>
+    <button class="tab-btn" data-tab="settings"><span class="ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.6"/><path d="M10 3v2M10 15v2M17 10h-2M5 10H3M14.9 5.1l-1.4 1.4M6.5 13.5l-1.4 1.4M14.9 14.9l-1.4-1.4M6.5 6.5L5.1 5.1"/></svg></span>설정</button>
+  </div>
 </nav>
-<script src="app.js"></script>
+
+<main class="wrap">
+
+  <!-- ============ HOME (Dashboard) ============ -->
+  <section id="tab-home" class="active">
+    <div class="hero">
+      <div class="card-label">결혼 준비에 쓸 수 있는 남은 돈</div>
+      <div class="big-num" id="homeRemaining">0만원</div>
+      <div class="hero-breakdown">
+        <div><div class="k">총 가용자산</div><div class="v" id="homeTotalAsset">0</div></div>
+        <div><div class="k">지금까지 쓴 돈</div><div class="v" id="homeSpent">0</div></div>
+      </div>
+    </div>
+
+    <div id="homeVerdict"></div>
+
+    <div class="card clickable" data-go="roadmap" id="homeDdayCard" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="card-label"><span class="wico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span> 결혼식까지</div>
+          <div class="mid-num" id="homeDday">-</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="card-label">다가오는 일정</div>
+          <div id="homeNextTask" style="font-size:13.5px;font-weight:700;">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">한눈에 보기</div>
+    <div class="grid2">
+      <div class="card clickable" data-go="house">
+        <div class="card-label">집 예산 (전세)</div>
+        <div class="mid-num" id="homeHouseBudget">0만원</div>
+        <div class="card-sub">지원금+자기자금 기준 →</div>
+      </div>
+      <div class="card clickable" data-go="income">
+        <div class="card-label">월 여유자금</div>
+        <div class="mid-num" id="homeMonthlyFree">0만원</div>
+        <div class="card-sub">소득 - 고정비 →</div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card clickable" data-go="loan">
+        <div class="card-label">대출 월 상환액</div>
+        <div class="mid-num" id="homeLoanPay">0만원</div>
+        <div class="card-sub" id="homeLoanCond">-</div>
+      </div>
+      <div class="card clickable" data-go="assets">
+        <div class="card-label">순자산</div>
+        <div class="mid-num" id="homeNetAsset">0만원</div>
+        <div class="card-sub">자산 - 부채 →</div>
+      </div>
+    </div>
+
+    <div class="section-title">결혼 준비 지출 현황</div>
+    <div class="card clickable" data-go="spend">
+      <div id="homeSpendBars"></div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section id="tab-roadmap">
+    <div class="hero" id="ddayHero">
+      <div class="card-label"><span class="wico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span> 결혼식까지</div>
+      <div class="big-num" id="rmDday">날짜를 정해주세요</div>
+      <div class="card-sub" id="rmDate">-</div>
+    </div>
+
+    <div class="card">
+      <div class="card-sub"><span class="wico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span> 결혼식은 <b style="color:var(--ink);">2026년 12월 5일(토) 오후 3시 40분</b>으로 고정되어 있어요.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label" style="margin-bottom:10px;">우리의 웨딩로드</div>
+      <div class="progress-road" id="progressRoad">
+        <div class="road-track"></div>
+        <div class="road-char" id="roadChar">
+          <svg viewBox="0 0 40 46" width="34" height="39" aria-hidden="true">
+            <ellipse cx="20" cy="43" rx="13" ry="2.6" fill="rgba(0,0,0,0.15)"/>
+            <g class="leg-l" style="transform-origin:11px 30px;">
+              <rect x="8.5" y="30" width="4.5" height="11" rx="2" fill="#2C3639"/>
+            </g>
+            <g class="leg-r" style="transform-origin:15px 30px;">
+              <rect x="13" y="30" width="4.5" height="11" rx="2" fill="#191F28"/>
+            </g>
+            <rect x="6" y="16" width="15" height="16" rx="4" fill="#2C3639"/>
+            <rect x="12.7" y="18" width="2.2" height="10" fill="#191F28"/>
+            <circle cx="13.8" cy="12" r="6" fill="#FFDFC0"/>
+            <path d="M8 12 Q8.5 6 13.8 6 Q19.5 6 19.8 12 Q16 9.5 13.5 10.3 Q10.5 11 8 12Z" fill="#4A3222"/>
+            <rect x="11.6" y="19.5" width="4.4" height="3" fill="#F04452"/>
+            <g class="leg-r2" style="transform-origin:27px 30px;">
+              <rect x="24.5" y="30" width="4.5" height="11" rx="2" fill="#FBD5E3"/>
+            </g>
+            <g class="leg-l2" style="transform-origin:31px 30px;">
+              <rect x="29" y="30" width="4.5" height="11" rx="2" fill="#F7C1D6"/>
+            </g>
+            <path d="M22 32 L28 17 Q29.5 15 31 17 L37 32 Z" fill="#FFFFFF" stroke="#EFE3E9" stroke-width="0.5"/>
+            <circle cx="28.6" cy="12.5" r="6" fill="#FFDFC0"/>
+            <path d="M23 12.5 Q22.5 6 28.6 6 Q35 6 35 13 Q31 9.8 28.5 10.6 Q25.5 11.4 23 12.5Z" fill="#B5651D"/>
+            <path d="M32.5 10 Q37 11 36 18 Q34.5 14 32.5 12Z" fill="#F3F0EC" opacity="0.85"/>
+            <circle cx="21" cy="27" r="1.6" fill="#F04452"/>
+            <circle cx="22.6" cy="29" r="1.3" fill="#FF8FAE"/>
+            <circle cx="19.6" cy="29.3" r="1.3" fill="#F04452"/>
+            <circle cx="21.3" cy="31" r="1.1" fill="#FBD5E3"/>
+          </svg>
+        </div>
+      </div>
+      <div class="road-labels"><span>시작</span><span id="roadPercent">0%</span><span><span class="wico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span> 결혼식</span></div>
+    </div>
+
+    <div id="rmUpcoming"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 4px 10px;">
+      <div class="section-title" style="margin:0;">전체 일정</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn small view-btn active" data-view="timeline" id="viewTimelineBtn">타임라인</button>
+        <button class="btn small view-btn" data-view="calendar" id="viewCalendarBtn">달력</button>
+      </div>
+    </div>
+
+    <!-- Timeline view -->
+    <div id="rmTimeline" class="card" style="padding:20px 16px;"></div>
+
+    <!-- Calendar view -->
+    <div id="rmCalendar" style="display:none;">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <button class="btn small" id="calPrev">◀</button>
+          <div style="font-size:15px;font-weight:900;" id="calTitle">-</div>
+          <button class="btn small" id="calNext">▶</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div id="calDayTasks"></div>
+    </div>
+
+    <button class="btn primary" id="addTaskBtn" style="margin-top:4px;">+ 일정 추가</button>
+  </section>
+
+  <!-- ============ ASSETS ============ -->
+  <section id="tab-assets">
+    <div class="card">
+      <div class="card-label">순자산 (자산 - 부채)</div>
+      <div class="big-num" id="assetNetTotal">0만원</div>
+      <div class="card-sub">집 예산에 포함된 금액: <b id="assetIncludedTotal">0만원</b></div>
+    </div>
+
+    <div class="section-title">자산·부채 목록</div>
+    <div class="card">
+      <div id="assetList"></div>
+      <button class="btn" id="addAssetBtn" style="margin-top:14px;">+ 항목 추가</button>
+    </div>
+    <div class="card-sub" style="padding:0 6px;">토글을 끄면 그 항목은 집 예산 계산에서 빠져요. 코인처럼 팔 생각이 없거나, 마이너스통장 같은 부채가 대상이에요.</div>
+  </section>
+
+  <!-- ============ HOUSE ============ -->
+  <section id="tab-house">
+    <div class="card">
+      <div class="card-label">집 목표 예산</div>
+      <div class="big-num" id="houseFinal">0만원</div>
+      <div class="card-sub" id="houseFormula">-</div>
+      <div class="gauge-track"><div class="gauge-fill" id="houseGauge" style="width:0%"></div></div>
+    </div>
+
+    <div class="section-title">전세임대 지원금</div>
+    <div class="card">
+      <div class="field">
+        <label>지원 대상 주택가격 상한 <span class="hint">· LH 공고 기준</span></label>
+        <div class="unit-wrap"><input type="number" id="houseCap" inputmode="numeric"><span class="unit">만원</span></div>
+      </div>
+      <div class="field">
+        <label>지원 비율 <span class="hint">· 신혼부부 2유형은 최대 80%</span></label>
+        <div class="unit-wrap"><input type="number" id="houseRate" inputmode="numeric"><span class="unit">%</span></div>
+      </div>
+      <div class="inline-result"><span>최대 지원금액</span><b id="houseSupport">0만원</b></div>
+    </div>
+
+    <div class="section-title">자기자금 + 예비비</div>
+    <div class="card">
+      <div class="inline-result" style="margin-top:0;"><span>자산에서 가져올 수 있는 돈</span><b id="houseOwnMoney">0만원</b></div>
+      <div class="card-sub" style="margin:8px 2px 14px;">자산 탭에서 "집 예산 포함" 토글로 조정할 수 있어요.</div>
+      <div class="field">
+        <label>예비비 <span class="hint">· 이사·중개수수료·등기 등, 300~500만원 권장</span></label>
+        <div class="unit-wrap"><input type="number" id="houseReserve" inputmode="numeric"><span class="unit">만원</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WEDDING SPEND ============ -->
+  <section id="tab-spend">
+    <div class="card">
+      <div class="card-label">지금까지 쓴 돈</div>
+      <div class="big-num" id="spendTotal">0만원</div>
+      <div class="card-sub">남은 예산: <b id="spendRemaining">0만원</b> (총 가용자산 기준)</div>
+    </div>
+
+    <div class="section-title">카테고리별 지출 <span style="font-weight:400;color:var(--ink-3);font-size:12px;">· 총액만 입력</span></div>
+    <div class="card" id="spendInputs"></div>
+  </section>
+
+  <!-- ============ INCOME / FIXED COSTS ============ -->
+  <section id="tab-income">
+    <div class="card">
+      <div class="card-label">월 여유자금 (소득 - 고정비)</div>
+      <div class="big-num" id="incomeFree">0만원</div>
+      <div class="card-sub">대출 상환에 쓸 수 있는 매달 여력이에요.</div>
+    </div>
+
+    <div class="section-title">세후 월 소득 <span style="font-weight:400;color:var(--ink-3);font-size:12px;">· 실수령액 기준</span></div>
+    <div class="card">
+      <div class="field">
+        <label>도비 소득</label>
+        <div class="unit-wrap"><input type="number" id="incMe" inputmode="numeric"><span class="unit">만원</span></div>
+      </div>
+      <div class="field">
+        <label>엥주 소득</label>
+        <div class="unit-wrap"><input type="number" id="incSpouse" inputmode="numeric"><span class="unit">만원</span></div>
+      </div>
+      <div class="inline-result"><span>합산 소득</span><b id="incTotal">0만원</b></div>
+    </div>
+
+    <div class="section-title">결혼 후 예상 월 고정비 <span style="font-weight:400;color:var(--ink-3);font-size:12px;">· 대략치로 시작해도 돼요</span></div>
+    <div class="card" id="fixedInputs"></div>
+
+    <div class="section-title">기타 정기지출 <span style="font-weight:400;color:var(--ink-3);font-size:12px;">· 구독료, 용돈 등 항목별로</span></div>
+    <div class="card">
+      <div id="fixedEtcList"></div>
+      <button class="btn" id="addEtcBtn" style="margin-top:14px;">+ 항목 추가</button>
+    </div>
+  </section>
+
+  <!-- ============ LOAN ============ -->
+  <section id="tab-loan">
+    <div id="loanVerdict"></div>
+
+    <div class="card">
+      <div class="card-label">예상 월 상환액 <span style="font-size:11px;">(원리금균등)</span></div>
+      <div class="big-num" id="loanMonthly">0만원</div>
+      <div class="card-sub" id="loanTotalInfo">-</div>
+    </div>
+
+    <div class="section-title">대출 조건 입력</div>
+    <div class="card">
+      <div class="field">
+        <label>대출 금액 <span class="hint">· 전세임대 지원금 또는 추가 대출</span></label>
+        <div class="unit-wrap"><input type="number" id="loanAmount" inputmode="numeric"><span class="unit">만원</span></div>
+      </div>
+      <div class="field">
+        <label>연 이자율 <span class="hint">· 은행/LH 안내 금리 입력</span></label>
+        <div class="unit-wrap"><input type="number" id="loanRate" step="0.1" inputmode="decimal"><span class="unit">%</span></div>
+      </div>
+      <div class="field">
+        <label>상환 기간</label>
+        <div class="unit-wrap"><input type="number" id="loanYears" inputmode="numeric"><span class="unit">년</span></div>
+      </div>
+      <div class="inline-result"><span>이자만 낼 경우 (전세대출 방식)</span><b id="loanInterestOnly">0만원/월</b></div>
+      <div class="card-sub" style="margin-top:8px;">전세자금대출은 보통 원금 없이 이자만 매달 내요. 위 큰 숫자는 원리금균등(원금+이자) 기준이고, 이 줄은 이자만 내는 경우예요.</div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section id="tab-settings">
+    <div class="section-title">구글시트 연동</div>
+    <div class="card">
+      <div class="card-sub" style="margin-bottom:12px;">기본 구글시트에 이미 연결되어 있어요. 다른 시트로 바꾸고 싶을 때만 아래에 새 URL을 입력하세요.</div>
+      <div class="field">
+        <label>Apps Script 웹앱 URL</label>
+        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <button class="btn primary" id="connectBtn">저장하고 연결</button>
+      <div class="card-sub" id="connStatus" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="section-title">데이터</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;font-weight:700;">로컬 데이터 초기화</div>
+          <div class="card-sub">이 기기에 저장된 값만 지워요. 시트는 유지돼요.</div>
+        </div>
+        <button class="btn small" id="resetBtn" style="background:var(--red-pale);color:var(--red);">초기화</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<div class="celebrate-overlay" id="celebrateOverlay">
+  <button class="celebrate-close" id="celebrateCloseBtn" aria-label="닫기"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+  <div id="confettiLayer"></div>
+  <div class="celebrate-bell">
+    <svg width="40" height="40" viewBox="0 0 20 20" fill="none" stroke="#D4A24C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3c-2.6 0-4.2 2.1-4.2 4.7v2.4L4 12.8h12L13.8 10V7.7C13.8 5.1 12.2 3 10 3z" fill="#FFF3D6"/><path d="M8.1 15.3a1.9 1.9 0 003.8 0"/><circle cx="10" cy="2.2" r="0.9" fill="#D4A24C" stroke="none"/></svg>
+  </div>
+  <div class="guest-row">
+    <svg width="26" height="34" viewBox="0 0 26 34"><ellipse cx="13" cy="32" rx="10" ry="2" fill="rgba(0,0,0,0.1)"/><rect x="7" y="14" width="12" height="16" rx="5" fill="#6B8E6B"/><circle cx="13" cy="9" r="6" fill="#FFDFC0"/><path d="M8 9 Q8 4 13 4 Q18 4 18 9 Q14 7 13 7.5 Q11 8 8 9Z" fill="#4A3222"/><path d="M9 15 L4 6" stroke="#6B8E6B" stroke-width="3" stroke-linecap="round"/><path d="M17 15 L22 6" stroke="#6B8E6B" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg width="26" height="34" viewBox="0 0 26 34"><ellipse cx="13" cy="32" rx="10" ry="2" fill="rgba(0,0,0,0.1)"/><rect x="7" y="14" width="12" height="16" rx="5" fill="#D6336C"/><circle cx="13" cy="9" r="6" fill="#FFDFC0"/><path d="M8 9 Q8 4 13 4 Q18 4 18 9 Q14 7 13 7.5 Q11 8 8 9Z" fill="#B5651D"/><path d="M9 15 L4 6" stroke="#D6336C" stroke-width="3" stroke-linecap="round"/><path d="M17 15 L22 6" stroke="#D6336C" stroke-width="3" stroke-linecap="round"/></svg>
+  </div>
+  <div class="celebrate-couple">
+    <svg viewBox="0 0 40 46" width="58" height="67"><ellipse cx="20" cy="43" rx="13" ry="2.6" fill="rgba(0,0,0,0.15)"/><rect x="8.5" y="30" width="4.5" height="11" rx="2" fill="#2C3639"/><rect x="13" y="30" width="4.5" height="11" rx="2" fill="#191F28"/><rect x="6" y="16" width="15" height="16" rx="4" fill="#2C3639"/><rect x="12.7" y="18" width="2.2" height="10" fill="#191F28"/><circle cx="13.8" cy="12" r="6" fill="#FFDFC0"/><path d="M8 12 Q8.5 6 13.8 6 Q19.5 6 19.8 12 Q16 9.5 13.5 10.3 Q10.5 11 8 12Z" fill="#4A3222"/><rect x="11.6" y="19.5" width="4.4" height="3" fill="#F04452"/><rect x="24.5" y="30" width="4.5" height="11" rx="2" fill="#FBD5E3"/><rect x="29" y="30" width="4.5" height="11" rx="2" fill="#F7C1D6"/><path d="M22 32 L28 17 Q29.5 15 31 17 L37 32 Z" fill="#FFFFFF" stroke="#EFE3E9" stroke-width="0.5"/><circle cx="28.6" cy="12.5" r="6" fill="#FFDFC0"/><path d="M23 12.5 Q22.5 6 28.6 6 Q35 6 35 13 Q31 9.8 28.5 10.6 Q25.5 11.4 23 12.5Z" fill="#B5651D"/><path d="M32.5 10 Q37 11 36 18 Q34.5 14 32.5 12Z" fill="#F3F0EC" opacity="0.85"/><circle cx="21" cy="27" r="1.6" fill="#F04452"/><circle cx="22.6" cy="29" r="1.3" fill="#FF8FAE"/><circle cx="19.6" cy="29.3" r="1.3" fill="#F04452"/><circle cx="21.3" cy="31" r="1.1" fill="#FBD5E3"/></svg>
+  </div>
+  <div class="guest-row">
+    <svg width="26" height="34" viewBox="0 0 26 34"><ellipse cx="13" cy="32" rx="10" ry="2" fill="rgba(0,0,0,0.1)"/><rect x="7" y="14" width="12" height="16" rx="5" fill="#D4A24C"/><circle cx="13" cy="9" r="6" fill="#FFDFC0"/><path d="M8 9 Q8 4 13 4 Q18 4 18 9 Q14 7 13 7.5 Q11 8 8 9Z" fill="#4A3222"/><path d="M9 15 L4 6" stroke="#D4A24C" stroke-width="3" stroke-linecap="round"/><path d="M17 15 L22 6" stroke="#D4A24C" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg width="26" height="34" viewBox="0 0 26 34"><ellipse cx="13" cy="32" rx="10" ry="2" fill="rgba(0,0,0,0.1)"/><rect x="7" y="14" width="12" height="16" rx="5" fill="#4E8FD9"/><circle cx="13" cy="9" r="6" fill="#FFDFC0"/><path d="M8 9 Q8 4 13 4 Q18 4 18 9 Q14 7 13 7.5 Q11 8 8 9Z" fill="#B5651D"/><path d="M9 15 L4 6" stroke="#4E8FD9" stroke-width="3" stroke-linecap="round"/><path d="M17 15 L22 6" stroke="#4E8FD9" stroke-width="3" stroke-linecap="round"/></svg>
+  </div>
+  <div class="celebrate-title"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#D4A24C" stroke-width="1.6" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px;"><path d="M4 16l2-2M9 17l1.2-2.4M14 16.5l1-2.6"/><path d="M9 3.5l1 2"/><circle cx="6" cy="5" r="1" fill="#D4A24C" stroke="none"/><circle cx="16" cy="8" r="1" fill="#D6336C" stroke="none"/><rect x="12" y="3" width="2.2" height="2.2" transform="rotate(20 13.1 4.1)" fill="#6B8E6B" stroke="none"/></svg>결혼 준비 완료!</div>
+  <div class="celebrate-sub">축하해요, 도비 & 엥주 <span class="wico"><svg viewBox="0 0 20 20" fill="none" stroke="#D6336C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg></span> 이제 결혼식만 남았어요</div>
+  <div class="celebrate-hint">화면을 탭하면 닫혀요</div>
+</div>
+
+<footer>우리 결혼 예산 · 두 사람이 같은 구글시트를 바라봐요</footer>
+
+<script>
+/* ================= STATE ================= */
+const DEFAULT_SCRIPT_URL = '';
+let SCRIPT_URL = localStorage.getItem('wb_scriptUrl') || DEFAULT_SCRIPT_URL;
+const SPEND_CATS = ['집(계약금 등)','결혼식','신혼여행','가전가구','자동차','기타'];
+const FIXED_CATS = [
+  {key:'housing', name:'주거관리비', hint:'관리비·공과금', defMe:15, defSpouse:10},
+  {key:'telecom', name:'통신비', hint:'휴대폰·인터넷', defMe:8, defSpouse:7},
+  {key:'insurance', name:'보험료', hint:'각자 가입한 보험', defMe:15, defSpouse:15},
+  {key:'food', name:'식비', hint:'최소 필수 기준', defMe:30, defSpouse:30},
+  {key:'transport', name:'교통비', hint:'대중교통·주유', defMe:10, defSpouse:10},
+];
+
+let S = {
+  assets: [],
+  house: {cap:15000, rate:35, reserve:150},
+  spend: {},
+  income: {me:0, spouse:0},
+  fixed: {},
+  fixedEtc: [],
+  loan: {amount:11000, rate:4.2, years:30},
+  wedding: {date:'2026-11-14', time:'13:00'},
+  tasks: [],
+};
+
+// 결혼식 D-day 기준 표준 준비 템플릿 (offset = 결혼식 며칠 전)
+const TASK_TEMPLATE = [
+  {name:'상견례', offset:300},
+  {name:'결혼식 날짜·예산 확정', offset:280},
+  {name:'웨딩홀 투어·계약', offset:250},
+  {name:'스드메 계약', offset:210},
+  {name:'신혼집 알아보기 시작', offset:200},
+  {name:'신혼집 계약', offset:150},
+  {name:'웨딩촬영', offset:140},
+  {name:'신혼여행 예약', offset:120},
+  {name:'예물·예단 준비', offset:100},
+  {name:'청첩장 제작', offset:90},
+  {name:'청첩장 발송', offset:60},
+  {name:'가전·가구 주문', offset:55},
+  {name:'사회자·축가 섭외', offset:45},
+  {name:'식순·인원 확정', offset:21},
+  {name:'드레스 최종 가봉', offset:14},
+  {name:'신혼집 이사', offset:10},
+  {name:'최종 점검 (부케·헤어·비용정리)', offset:3},
+];
+let saveTimer = null;
+
+const fmt = n => Math.round(n||0).toLocaleString('ko-KR') + '만원';
+const num = v => Number(v)||0;
+
+function defaultAssets(){
+  return [
+    {name:'예금', amount:150, type:'자산', include:true, note:'즉시 가능'},
+    {name:'청년도약계좌', amount:600, type:'자산', include:true, note:'혼인신고 후 손실없음'},
+    {name:'우리사주', amount:200, type:'자산', include:true, note:'1개월 내 매도'},
+    {name:'ISA계좌', amount:450, type:'자산', include:true, note:'3년 경과'},
+    {name:'코인계좌', amount:80, type:'자산', include:false, note:'매도 안 함'},
+  ];
+}
+function ensureDefaults(){
+  if(!S.assets || S.assets.length===0) S.assets = defaultAssets();
+  if(!S.house) S.house = {cap:15000, rate:35, reserve:150};
+  if(!S.spend) S.spend = {};
+  SPEND_CATS.forEach(c=>{ if(S.spend[c]===undefined) S.spend[c]=0; });
+  if(!S.income) S.income = {me:0, spouse:0};
+  if(!S.fixed) S.fixed = {};
+  FIXED_CATS.forEach(f=>{
+    const cur = S.fixed[f.key];
+    if(cur===undefined){
+      S.fixed[f.key] = {me:f.defMe, spouse:f.defSpouse};
+    } else if(typeof cur === 'number'){
+      // 예전 버전(단일 숫자) 데이터 마이그레이션: 절반씩 나눠 배정
+      S.fixed[f.key] = {me: Math.round(cur/2), spouse: Math.round(cur/2)};
+    }
+  });
+  if(!S.fixedEtc) S.fixedEtc = [];
+  if(S.fixedEtc.length===0 && S.fixed.etc){
+    // 예전 '기타 정기지출' 단일 값을 항목 하나로 이전
+    const oldEtc = num(S.fixed.etc);
+    if(oldEtc>0) S.fixedEtc.push({name:'기타', amount:oldEtc});
+    delete S.fixed.etc;
+  }
+  if(!S.loan) S.loan = {amount:11000, rate:4.2, years:30};
+  if(!S.wedding) S.wedding = {date:'2026-11-14', time:'13:00'};
+  if(!S.wedding.date) S.wedding.date = '2026-11-14';
+  if(!S.wedding.time) S.wedding.time = '13:00';
+  if(!S.tasks) S.tasks = [];
+  if(S.tasks.length===0){
+    S.tasks = TASK_TEMPLATE.map((t,i)=>({id:'t'+i, name:t.name, offset:t.offset, date:'', done:false, memo:''}));
+  }
+}
+
+/* ================= CALC ================= */
+function calc(){
+  const assetsIncluded = S.assets.filter(a=>a.include)
+    .reduce((s,a)=> s + (a.type==='부채' ? -a.amount : a.amount), 0);
+  const netAsset = S.assets.reduce((s,a)=> s + (a.type==='부채' ? -a.amount : a.amount), 0);
+  const totalUsable = S.assets.filter(a=>a.type!=='부채').reduce((s,a)=>s+a.amount,0)
+    - S.assets.filter(a=>a.type==='부채'&&a.include).reduce((s,a)=>s+a.amount,0);
+  const support = S.house.cap * (S.house.rate/100);
+  const houseBudget = support + assetsIncluded - S.house.reserve;
+  const spentTotal = SPEND_CATS.reduce((s,c)=>s+num(S.spend[c]),0);
+  const grossAsset = S.assets.filter(a=>a.type!=='부채').reduce((s,a)=>s+a.amount,0);
+  const remaining = grossAsset - spentTotal;
+  const incomeTotal = num(S.income.me)+num(S.income.spouse);
+  const fixedCatTotal = FIXED_CATS.reduce((s,f)=>s+num(S.fixed[f.key]?.me)+num(S.fixed[f.key]?.spouse),0);
+  const fixedEtcTotal = S.fixedEtc.reduce((s,e)=>s+num(e.amount),0);
+  const fixedTotal = fixedCatTotal + fixedEtcTotal;
+  const monthlyFree = incomeTotal - fixedTotal;
+
+  // loan: 원리금균등 (amortized)
+  const P = num(S.loan.amount)*10000;
+  const r = num(S.loan.rate)/100/12;
+  const n = num(S.loan.years)*12;
+  let monthlyPay = 0;
+  if(P>0 && n>0){
+    monthlyPay = r===0 ? P/n : P * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+  }
+  const monthlyPayMan = monthlyPay/10000;
+  const interestOnly = P * (num(S.loan.rate)/100) / 12 / 10000;
+
+  return {assetsIncluded, netAsset, support, houseBudget, spentTotal, grossAsset,
+          remaining, incomeTotal, fixedTotal, monthlyFree, monthlyPayMan, interestOnly};
+}
+
+/* ================= RENDER ================= */
+const ICO_CHECK_CIRCLE = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2"/><path d="M7 10.3l2 2 4-4.4"/></svg>';
+const ICO_ALERT = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.2L18 16H2z"/><path d="M10 8v3.6"/><circle cx="10" cy="14" r="0.9" fill="currentColor" stroke="none"/></svg>';
+const ICO_X = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
+const ICO_CHECK = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>';
+const ICO_NOTE = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="12" height="14" rx="1.5"/><path d="M7 7.5h6M7 10.5h6M7 13.5h3.5"/></svg>';
+const ICO_RINGS = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="12" r="4"/><circle cx="12.5" cy="12" r="4"/><path d="M8 5.5L10 3l2 2.5"/></svg>';
+
+function verdictHTML(free, pay){
+  if(pay<=0) return '';
+  const ratio = free>0 ? pay/free : 99;
+  if(free<=0) return `<div class="verdict bad"><span class="ico">${ICO_ALERT}</span><div>고정비가 소득보다 많아요<div class="desc">소득·고정비 탭에서 숫자를 먼저 확인해보세요.</div></div></div>`;
+  if(ratio<=0.5) return `<div class="verdict ok"><span class="ico">${ICO_CHECK_CIRCLE}</span><div>감당 가능해요<div class="desc">월 상환액 ${fmt(pay)}이 여유자금 ${fmt(free)}의 절반 이하예요.</div></div></div>`;
+  if(ratio<=0.8) return `<div class="verdict tight"><span class="ico">${ICO_ALERT}</span><div>빠듯하지만 가능해요<div class="desc">월 상환액이 여유자금의 ${Math.round(ratio*100)}%예요. 예상 못한 지출에 대비하세요.</div></div></div>`;
+  if(ratio<=1) return `<div class="verdict tight"><span class="ico">${ICO_ALERT}</span><div>매우 빠듯해요<div class="desc">여유자금 거의 전부가 상환에 들어가요. 대출 조건을 조정해보세요.</div></div></div>`;
+  return `<div class="verdict bad"><span class="ico">${ICO_ALERT}</span><div>지금 조건으로는 어려워요<div class="desc">월 상환액 ${fmt(pay)} > 여유자금 ${fmt(free)}. 금액·기간을 조정해보세요.</div></div></div>`;
+}
+
+function render(){
+  const c = calc();
+
+  /* HOME */
+  document.getElementById('homeRemaining').textContent = fmt(c.remaining);
+  document.getElementById('homeTotalAsset').textContent = fmt(c.grossAsset);
+  document.getElementById('homeSpent').textContent = fmt(c.spentTotal);
+  document.getElementById('homeHouseBudget').textContent = fmt(c.houseBudget);
+  document.getElementById('homeMonthlyFree').textContent = fmt(c.monthlyFree);
+  document.getElementById('homeLoanPay').textContent = fmt(c.monthlyPayMan);
+  document.getElementById('homeLoanCond').textContent = `${S.loan.rate}% · ${S.loan.years}년 →`;
+  document.getElementById('homeNetAsset').textContent = fmt(c.netAsset);
+  document.getElementById('homeVerdict').innerHTML = verdictHTML(c.monthlyFree, c.monthlyPayMan);
+
+  const maxSpend = Math.max(...SPEND_CATS.map(k=>num(S.spend[k])), 1);
+  document.getElementById('homeSpendBars').innerHTML = SPEND_CATS.map(k=>{
+    const v = num(S.spend[k]);
+    return `<div class="bar-row"><div class="name">${k.replace('(계약금 등)','')}</div>
+      <div class="bar-bg"><div class="bar" style="width:${v/maxSpend*100}%"></div></div>
+      <div class="amt">${fmt(v)}</div></div>`;
+  }).join('');
+
+  /* ASSETS */
+  document.getElementById('assetNetTotal').textContent = fmt(c.netAsset);
+  document.getElementById('assetIncludedTotal').textContent = fmt(c.assetsIncluded);
+  renderAssetList();
+
+  /* HOUSE */
+  document.getElementById('houseFinal').textContent = fmt(c.houseBudget);
+  document.getElementById('houseFormula').textContent =
+    `지원금 ${fmt(c.support)} + 자기자금 ${fmt(c.assetsIncluded)} - 예비비 ${fmt(S.house.reserve)}`;
+  document.getElementById('houseSupport').textContent = fmt(c.support);
+  document.getElementById('houseOwnMoney').textContent = fmt(c.assetsIncluded);
+  const gaugePct = Math.min(100, c.houseBudget / (S.house.cap*1.25) * 100);
+  document.getElementById('houseGauge').style.width = Math.max(3,gaugePct)+'%';
+
+  /* SPEND */
+  document.getElementById('spendTotal').textContent = fmt(c.spentTotal);
+  document.getElementById('spendRemaining').textContent = fmt(c.remaining);
+
+  /* INCOME */
+  document.getElementById('incomeFree').textContent = fmt(c.monthlyFree);
+  document.getElementById('incTotal').textContent = fmt(c.incomeTotal);
+
+  /* LOAN */
+  document.getElementById('loanMonthly').textContent = fmt(c.monthlyPayMan);
+  const totalPay = c.monthlyPayMan * S.loan.years * 12;
+  document.getElementById('loanTotalInfo').textContent =
+    `총 상환액 약 ${fmt(totalPay)} (원금 ${fmt(S.loan.amount)} + 이자 ${fmt(totalPay-S.loan.amount)})`;
+  document.getElementById('loanInterestOnly').textContent = fmt(c.interestOnly)+'/월';
+  document.getElementById('loanVerdict').innerHTML = verdictHTML(c.monthlyFree, c.monthlyPayMan);
+
+  /* ROADMAP */
+  renderRoadmap();
+}
+
+/* ---- asset list (with inline edit) ---- */
+let editingIdx = null;
+function renderAssetList(){
+  const el = document.getElementById('assetList');
+  el.innerHTML = '';
+  S.assets.forEach((a,i)=>{
+    const row = document.createElement('div');
+    row.className='item-row';
+    const isDebt = a.type==='부채';
+    row.innerHTML = `
+      <div class="info" style="cursor:pointer;">
+        <div class="nm">${a.name} ${isDebt?'<span style="font-size:11px;color:var(--red);font-weight:500;">부채</span>':''}</div>
+        <div class="nt">${a.note||''}</div>
+      </div>
+      <div class="val ${isDebt?'minus':''} ${a.include?'':'excluded'}">${isDebt?'-':''}${fmt(a.amount)}</div>
+      <label class="toggle"><input type="checkbox" ${a.include?'checked':''} data-i="${i}"><span class="tr"></span></label>
+    `;
+    row.querySelector('.info').addEventListener('click', ()=>{ editingIdx = editingIdx===i?null:i; renderAssetList(); });
+    row.querySelector('input[type=checkbox]').addEventListener('change', e=>{
+      S.assets[i].include = e.target.checked; render(); persist();
+    });
+    el.appendChild(row);
+
+    if(editingIdx===i){
+      const panel = document.createElement('div');
+      panel.className='edit-panel';
+      panel.innerHTML = `
+        <div class="field"><label>이름</label><input type="text" value="${a.name}" data-f="name"></div>
+        <div class="row2">
+          <div class="field"><label>금액(만원)</label><input type="number" value="${a.amount}" data-f="amount" inputmode="numeric"></div>
+          <div class="field"><label>구분</label><select data-f="type"><option ${a.type==='자산'?'selected':''}>자산</option><option ${a.type==='부채'?'selected':''}>부채</option></select></div>
+        </div>
+        <div class="field"><label>메모</label><input type="text" value="${a.note||''}" data-f="note"></div>
+        <div class="actions">
+          <button class="btn danger-text" data-act="del">삭제</button>
+          <button class="btn small primary" data-act="done">완료</button>
+        </div>`;
+      panel.querySelectorAll('input,select').forEach(inp=>{
+        inp.addEventListener('input', e=>{
+          const f = e.target.dataset.f;
+          S.assets[i][f] = f==='amount' ? num(e.target.value) : e.target.value;
+          persist();
+        });
+      });
+      panel.querySelector('[data-act=del]').addEventListener('click', ()=>{
+        S.assets.splice(i,1); editingIdx=null; render(); persist();
+      });
+      panel.querySelector('[data-act=done]').addEventListener('click', ()=>{
+        editingIdx=null; render();
+      });
+      el.appendChild(panel);
+    }
+  });
+}
+document.getElementById('addAssetBtn').addEventListener('click', ()=>{
+  S.assets.push({name:'새 항목', amount:0, type:'자산', include:true, note:''});
+  editingIdx = S.assets.length-1;
+  render(); persist();
+});
+
+/* ---- static inputs binding ---- */
+function bindNum(id, get, set){
+  const el = document.getElementById(id);
+  el.value = get();
+  el.addEventListener('input', e=>{ set(num(e.target.value)); render(); persist(); });
+}
+function initInputs(){
+  bindNum('houseCap', ()=>S.house.cap, v=>S.house.cap=v);
+  bindNum('houseRate', ()=>S.house.rate, v=>S.house.rate=v);
+  bindNum('houseReserve', ()=>S.house.reserve, v=>S.house.reserve=v);
+  bindNum('incMe', ()=>S.income.me, v=>S.income.me=v);
+  bindNum('incSpouse', ()=>S.income.spouse, v=>S.income.spouse=v);
+  bindNum('loanAmount', ()=>S.loan.amount, v=>S.loan.amount=v);
+  bindNum('loanYears', ()=>S.loan.years, v=>S.loan.years=v);
+  const lr = document.getElementById('loanRate');
+  lr.value = S.loan.rate;
+  lr.addEventListener('input', e=>{ S.loan.rate = Number(e.target.value)||0; render(); persist(); });
+
+  const sp = document.getElementById('spendInputs');
+  sp.innerHTML = SPEND_CATS.map(cat=>`
+    <div class="field"><label>${cat}</label>
+    <div class="unit-wrap"><input type="number" data-spend="${cat}" value="${S.spend[cat]}" inputmode="numeric"><span class="unit">만원</span></div></div>
+  `).join('');
+  sp.querySelectorAll('[data-spend]').forEach(inp=>{
+    inp.addEventListener('input', e=>{ S.spend[e.target.dataset.spend]=num(e.target.value); render(); persist(); });
+  });
+
+  const fx = document.getElementById('fixedInputs');
+  fx.innerHTML = FIXED_CATS.map(f=>`
+    <div class="field">
+      <label>${f.name} <span class="hint">· ${f.hint}</span></label>
+      <div class="person-grid">
+        <div class="person-input me">
+          <span class="p-tag">도비</span>
+          <input type="number" data-fixed="${f.key}" data-who="me" value="${S.fixed[f.key].me}" inputmode="numeric">
+          <span class="p-unit">만원</span>
+        </div>
+        <div class="person-input spouse">
+          <span class="p-tag">엥주</span>
+          <input type="number" data-fixed="${f.key}" data-who="spouse" value="${S.fixed[f.key].spouse}" inputmode="numeric">
+          <span class="p-unit">만원</span>
+        </div>
+      </div>
+      <div class="cat-subtotal">소계 <b data-subtotal="${f.key}">0만원</b></div>
+    </div>
+  `).join('') + `<div class="inline-result"><span>카테고리 고정비 합계</span><b id="fixedCatTotal">0만원</b></div>`;
+  fx.querySelectorAll('[data-fixed]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      S.fixed[e.target.dataset.fixed][e.target.dataset.who] = num(e.target.value);
+      renderFixedTotal(); render(); persist();
+      renderFixedTotal(); render(); persist();
+    });
+  });
+  renderFixedTotal();
+  renderEtcList();
+}
+let editingEtcIdx = null;
+function renderEtcList(){
+  const el = document.getElementById('fixedEtcList');
+  if(S.fixedEtc.length===0){
+    el.innerHTML = `<div class="card-sub" style="padding:6px 0;">아직 등록된 항목이 없어요. 아래 버튼으로 추가해보세요.</div>`;
+  } else {
+    el.innerHTML = '';
+  }
+  S.fixedEtc.forEach((e,i)=>{
+    const row = document.createElement('div');
+    row.className='item-row';
+    row.innerHTML = `
+      <div class="info" style="cursor:pointer;">
+        <div class="nm">${e.name||'이름 없음'}</div>
+      </div>
+      <div class="val">${fmt(e.amount)}</div>
+    `;
+    row.querySelector('.info').addEventListener('click', ()=>{ editingEtcIdx = editingEtcIdx===i?null:i; renderEtcList(); });
+    el.appendChild(row);
+
+    if(editingEtcIdx===i){
+      const panel = document.createElement('div');
+      panel.className='edit-panel';
+      panel.innerHTML = `
+        <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="field"><label>이름</label><input type="text" value="${e.name||''}" data-ef="name"></div>
+          <div class="field"><label>금액(만원)</label><input type="number" value="${e.amount||0}" data-ef="amount" inputmode="numeric"></div>
+        </div>
+        <div class="actions">
+          <button class="btn danger-text" data-eact="del">삭제</button>
+          <button class="btn small primary" data-eact="done">완료</button>
+        </div>`;
+      panel.querySelectorAll('[data-ef]').forEach(inp=>{
+        inp.addEventListener('input', ev=>{
+          const f = ev.target.dataset.ef;
+          S.fixedEtc[i][f] = f==='amount' ? num(ev.target.value) : ev.target.value;
+          renderFixedTotal(); render(); persist();
+        });
+      });
+      panel.querySelector('[data-eact=del]').addEventListener('click', ()=>{
+        S.fixedEtc.splice(i,1); editingEtcIdx=null; renderFixedTotal(); render(); renderEtcList(); persist();
+      });
+      panel.querySelector('[data-eact=done]').addEventListener('click', ()=>{
+        editingEtcIdx=null; renderEtcList();
+      });
+      el.appendChild(panel);
+    }
+  });
+}
+document.getElementById('addEtcBtn').addEventListener('click', ()=>{
+  S.fixedEtc.push({name:'새 항목', amount:0});
+  editingEtcIdx = S.fixedEtc.length-1;
+  renderEtcList(); renderFixedTotal(); render(); persist();
+});
+function renderFixedTotal(){
+  FIXED_CATS.forEach(f=>{
+    const sub = num(S.fixed[f.key]?.me)+num(S.fixed[f.key]?.spouse);
+    const subEl = document.querySelector(`[data-subtotal="${f.key}"]`);
+    if(subEl) subEl.textContent = fmt(sub);
+  });
+  const t = FIXED_CATS.reduce((s,f)=>s+num(S.fixed[f.key]?.me)+num(S.fixed[f.key]?.spouse),0);
+  const el = document.getElementById('fixedCatTotal');
+  if(el) el.textContent = fmt(t);
+}
+
+/* ================= ROADMAP ================= */
+const DAY = 86400000;
+function todayMid(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function parseDate(s){ if(!s) return null; const d=new Date(s+'T00:00:00'); return isNaN(d)?null:d; }
+function fmtDate(d){ return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+function toISO(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+const DOW = ['일','월','화','수','목','금','토'];
+function fmtTime(t){
+  if(!t) return '';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h<12 ? '오전' : '오후';
+  const h12 = h%12===0 ? 12 : h%12;
+  return `${ampm} ${h12}시${m?` ${m}분`:''}`;
+}
+
+function taskDate(t){
+  if(t.date) return parseDate(t.date);
+  const w = parseDate(S.wedding.date);
+  if(w && t.offset!=null) return new Date(w.getTime() - t.offset*DAY);
+  return null;
+}
+function ddayNum(d){ // 오늘 기준 남은 일수 (음수=지남)
+  return Math.round((d - todayMid())/DAY);
+}
+function ddayBadge(t){
+  const d = taskDate(t);
+  if(!d) return {txt:'날짜 미정', cls:''};
+  const n = ddayNum(d);
+  if(t.done) return {txt:'완료', cls:''};
+  if(n<0) return {txt:`${-n}일 지남!`, cls:'overdue'};
+  if(n===0) return {txt:'오늘!', cls:'soon'};
+  if(n<=14) return {txt:`D-${n}`, cls:'soon'};
+  return {txt:`D-${n}`, cls:''};
+}
+function weddingDbadge(d){ // 결혼식 기준 D-표기
+  const w = parseDate(S.wedding.date);
+  if(!w || !d) return '';
+  const n = Math.round((w-d)/DAY);
+  if(n===0) return `<span class="wico">${ICO_RINGS}</span> 당일`;
+  if(n>0) return `본식 ${n}일 전`;
+  return `본식 ${-n}일 후`;
+}
+
+let rmView = 'timeline';
+let editingTaskId = null;
+let calCursor = null; // Date of displayed month
+let calSelected = null; // ISO string
+
+function renderRoadmap(){
+  // hero
+  const w = parseDate(S.wedding.date);
+  if(w){
+    const n = ddayNum(w);
+    document.getElementById('rmDday').innerHTML = n>0 ? `D-${n}` : n===0 ? `<span class="wico">${ICO_RINGS}</span> 오늘이에요!` : `D+${-n}`;
+    document.getElementById('rmDate').textContent = `${fmtDate(w)} ${DOW[w.getDay()]}요일 ${fmtTime(S.wedding.time)}`;
+    const hd = document.getElementById('homeDdayCard');
+    hd.style.display='block';
+    document.getElementById('homeDday').textContent = n>0?`D-${n}`:n===0?'오늘!':`D+${-n}`;
+  } else {
+    document.getElementById('rmDday').textContent = '날짜를 정해주세요';
+    document.getElementById('rmDate').textContent = '아래에서 결혼식 날짜를 입력하면 D-day가 계산돼요';
+    document.getElementById('homeDdayCard').style.display='none';
+  }
+
+  // upcoming (미완료 + 날짜 있는 것 중 가까운 순 2개)
+  const upcoming = S.tasks
+    .filter(t=>!t.done && taskDate(t))
+    .sort((a,b)=>taskDate(a)-taskDate(b))
+    .slice(0,2);
+  const upEl = document.getElementById('rmUpcoming');
+  if(upcoming.length>0){
+    upEl.innerHTML = `<div class="section-title">⏰ 다가오는 일정</div><div class="card" style="padding:8px 20px;">` +
+      upcoming.map(t=>{
+        const b = ddayBadge(t);
+        const d = taskDate(t);
+        return `<div class="item-row">
+          <div class="info"><div class="nm">${t.name}</div><div class="nt">${fmtDate(d)} ${DOW[d.getDay()]} · ${weddingDbadge(d)}</div></div>
+          <span class="tl-dbadge ${b.cls}">${b.txt}</span>
+        </div>`;
+      }).join('') + `</div>`;
+    // home card next task
+    const nx = upcoming[0];
+    document.getElementById('homeNextTask').textContent = `${nx.name} · ${ddayBadge(nx).txt}`;
+  } else {
+    upEl.innerHTML = '';
+    const el = document.getElementById('homeNextTask');
+    if(el) el.textContent = '없음';
+  }
+
+  if(rmView==='timeline') renderTimeline(); else renderCalendar();
+  document.getElementById('rmTimeline').style.display = rmView==='timeline'?'block':'none';
+  document.getElementById('rmCalendar').style.display = rmView==='calendar'?'block':'none';
+  document.getElementById('viewTimelineBtn').classList.toggle('active', rmView==='timeline');
+  document.getElementById('viewCalendarBtn').classList.toggle('active', rmView==='calendar');
+
+  renderProgressRoad();
+}
+
+let lastRoadPercent = null;
+function renderProgressRoad(){
+  const total = S.tasks.length;
+  const done = S.tasks.filter(t=>t.done).length;
+  const pct = total>0 ? Math.round(done/total*100) : 0;
+  document.getElementById('roadPercent').textContent = pct+'%';
+  const charEl = document.getElementById('roadChar');
+  const topPct = Math.min(96, Math.max(4, pct));
+  charEl.style.top = topPct+'%';
+
+  if(lastRoadPercent!==null && pct!==lastRoadPercent){
+    charEl.classList.add('walking');
+    clearTimeout(charEl._walkTimer);
+    charEl._walkTimer = setTimeout(()=>charEl.classList.remove('walking'), 700);
+  }
+  lastRoadPercent = pct;
+
+  return pct;
+}
+
+/* ---- Celebration overlay ---- */
+function checkCelebration(){
+  const total = S.tasks.length;
+  const done = S.tasks.filter(t=>t.done).length;
+  if(total>0 && done===total){
+    showCelebration();
+  }
+}
+function showCelebration(){
+  const ov = document.getElementById('celebrateOverlay');
+  if(ov.classList.contains('show')) return;
+  spawnConfetti();
+  ov.classList.add('show');
+}
+function hideCelebration(){
+  document.getElementById('celebrateOverlay').classList.remove('show');
+  document.getElementById('confettiLayer').innerHTML = '';
+}
+function spawnConfetti(){
+  const layer = document.getElementById('confettiLayer');
+  layer.innerHTML = '';
+  const colors = ['#03C75A','#FF8FAE','#D4A24C','#4E8FD9','#F04452','#8B5FBF'];
+  for(let i=0;i<32;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random()*100+'%';
+    el.style.background = colors[i%colors.length];
+    el.style.animationDuration = (2.2+Math.random()*1.8)+'s';
+    el.style.animationDelay = (Math.random()*1.5)+'s';
+    el.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+    layer.appendChild(el);
+  }
+}
+document.getElementById('celebrateOverlay').addEventListener('click', hideCelebration);
+document.getElementById('celebrateCloseBtn').addEventListener('click', e=>{ e.stopPropagation(); hideCelebration(); });
+
+let pastExpanded = false;
+function renderTimeline(){
+  const el = document.getElementById('rmTimeline');
+  const tasks = [...S.tasks].sort((a,b)=>{
+    const da = taskDate(a), db = taskDate(b);
+    if(!da && !db) return 0;
+    if(!da) return 1;
+    if(!db) return -1;
+    return da-db;
+  });
+
+  const today = todayMid();
+  const past = [];
+  const future = [];
+  const undated = [];
+  tasks.forEach(t=>{
+    const d = taskDate(t);
+    if(!d) undated.push(t);
+    else if(d < today) past.push(t);
+    else future.push(t);
+  });
+  const missedCount = past.filter(t=>!t.done).length;
+  const doneCount = past.filter(t=>t.done).length;
+
+  let html = '';
+
+  if(past.length>0){
+    html += `<div class="tl-past-toggle" id="pastToggle">
+      <span>${pastExpanded?'▾':'▸'} 지난 일정 ${past.length}개</span>
+      <span class="tl-past-sub">완료 ${doneCount}${missedCount>0?` · <b style="color:var(--red);">놓침 ${missedCount}</b>`:''}</span>
+    </div>`;
+    if(pastExpanded){
+      html += renderTaskGroup(past);
+    }
+  }
+
+  html += `<div class="tl-item today-marker">
+    <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+    <div class="tl-body" style="padding-bottom:14px;"><span class="today-label">● 오늘 (${fmtDate(today)})</span></div>
+  </div>`;
+
+  html += renderTaskGroup(future);
+
+  if(undated.length>0){
+    html += `<div class="section-title" style="margin-top:14px;">날짜 미정</div>`;
+    html += renderTaskGroup(undated);
+  }
+
+  el.innerHTML = html;
+  const pt = document.getElementById('pastToggle');
+  if(pt) pt.addEventListener('click', ()=>{ pastExpanded=!pastExpanded; renderTimeline(); });
+  bindTaskEvents(el);
+}
+
+function renderTaskGroup(tasks){
+  return tasks.map(t=>{
+    const d = taskDate(t);
+    const b = ddayBadge(t);
+    const cls = [t.done?'done':'', (!t.done && d && ddayNum(d)<0)?'overdue':'', b.cls==='soon'?'soon':''].join(' ');
+    return `<div class="tl-item ${cls}" data-task="${t.id}">
+      <div class="tl-rail">
+        <div class="tl-dot" data-toggle="${t.id}">${t.done?`<svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>`:''}</div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-head" data-edit="${t.id}">
+          <span class="tl-name">${t.name}</span>
+          <span class="tl-dbadge ${b.cls}">${b.txt}</span>
+        </div>
+        <div class="tl-date">${d ? `${fmtDate(d)} ${DOW[d.getDay()]} · ${weddingDbadge(d)}` : '날짜를 지정해주세요'}</div>
+        ${t.memo?`<div class="tl-memo"><span class="wico">${ICO_NOTE}</span> ${t.memo}</div>`:''}
+        ${editingTaskId===t.id ? taskEditHTML(t) : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function taskEditHTML(t){
+  const d = taskDate(t);
+  return `<div class="edit-panel" data-panel="${t.id}">
+    <div class="field"><label>이름</label><input type="text" value="${t.name}" data-tf="name"></div>
+    <div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field"><label>날짜</label><input type="date" value="${d?toISO(d):''}" data-tf="date" style="width:100%;padding:10px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;"></div>
+      <div class="field"><label>메모</label><input type="text" value="${t.memo||''}" data-tf="memo" placeholder="예: 강남 ○○홀"></div>
+    </div>
+    <div class="actions">
+      <button class="btn danger-text" data-tact="del">삭제</button>
+      <button class="btn small primary" data-tact="done">닫기</button>
+    </div>
+  </div>`;
+}
+
+function bindTaskEvents(scope){
+  scope.querySelectorAll('[data-toggle]').forEach(dot=>{
+    dot.addEventListener('click', e=>{
+      e.stopPropagation();
+      const t = S.tasks.find(x=>x.id===dot.dataset.toggle);
+      t.done = !t.done;
+      renderRoadmap(); persist();
+      if(t.done) checkCelebration();
+    });
+  });
+  scope.querySelectorAll('[data-edit]').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      const id = h.dataset.edit;
+      editingTaskId = editingTaskId===id ? null : id;
+      renderRoadmap();
+    });
+  });
+  scope.querySelectorAll('[data-panel]').forEach(panel=>{
+    const id = panel.dataset.panel;
+    const t = S.tasks.find(x=>x.id===id);
+    panel.querySelectorAll('[data-tf]').forEach(inp=>{
+      inp.addEventListener('click', e=>e.stopPropagation());
+      inp.addEventListener('input', e=>{
+        const f = e.target.dataset.tf;
+        t[f] = e.target.value;
+        if(f==='date') t.offset = null;
+        persist();
+        if(f==='date') renderRoadmap();
+      });
+    });
+    panel.querySelector('[data-tact=del]').addEventListener('click', e=>{
+      e.stopPropagation();
+      S.tasks = S.tasks.filter(x=>x.id!==id);
+      editingTaskId=null; renderRoadmap(); persist();
+    });
+    panel.querySelector('[data-tact=done]').addEventListener('click', e=>{
+      e.stopPropagation();
+      editingTaskId=null; renderRoadmap();
+    });
+  });
+}
+
+function renderCalendar(){
+  if(!calCursor){
+    calCursor = new Date(); calCursor.setDate(1);
+  }
+  const y = calCursor.getFullYear(), m = calCursor.getMonth();
+  document.getElementById('calTitle').textContent = `${y}년 ${m+1}월`;
+  const first = new Date(y,m,1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const today = todayMid();
+  const wIso = S.wedding.date;
+
+  // 날짜별 task 매핑
+  const map = {};
+  S.tasks.forEach(t=>{
+    const d = taskDate(t);
+    if(!d) return;
+    const iso = toISO(d);
+    (map[iso] = map[iso]||[]).push(t);
+  });
+
+  let html = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<startDow;i++) html += `<div class="cal-cell other"></div>`;
+  for(let day=1;day<=daysInMonth;day++){
+    const d = new Date(y,m,day);
+    const iso = toISO(d);
+    const tasks = map[iso]||[];
+    const cls = [
+      iso===toISO(today)?'today':'',
+      iso===calSelected?'selected':'',
+      iso===wIso?'wedding':'',
+    ].join(' ');
+    const dots = tasks.slice(0,3).map(t=>{
+      const dc = t.done?'done':(ddayNum(taskDate(t))<0?'overdue':'');
+      return `<i class="${dc}"></i>`;
+    }).join('');
+    html += `<div class="cal-cell ${cls}" data-day="${iso}"><span class="d">${day}</span>${iso===wIso?`<span class="wico" style="margin:0;">${ICO_RINGS}</span>`:''}<span class="cal-dots">${dots}</span></div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+  document.getElementById('calGrid').querySelectorAll('[data-day]').forEach(cell=>{
+    cell.addEventListener('click', ()=>{
+      calSelected = cell.dataset.day;
+      renderCalendar();
+    });
+  });
+
+  // 선택한 날짜의 일정 목록
+  const dt = document.getElementById('calDayTasks');
+  if(calSelected){
+    const tasks = map[calSelected]||[];
+    const sd = parseDate(calSelected);
+    dt.innerHTML = `<div class="section-title">${fmtDate(sd)} ${DOW[sd.getDay()]}요일</div>` +
+      (tasks.length===0
+        ? `<div class="card"><div class="card-sub">이 날은 일정이 없어요.</div></div>`
+        : `<div class="card" style="padding:8px 20px;">` + tasks.map(t=>{
+            const b = ddayBadge(t);
+            return `<div class="item-row">
+              <div class="tl-dot" data-toggle="${t.id}" style="${t.done?'background:var(--green);border-color:var(--green);':''}">${t.done?`<svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>`:''}</div>
+              <div class="info"><div class="nm" style="${t.done?'text-decoration:line-through;color:var(--ink-3);':''}">${t.name}</div>${t.memo?`<div class="nt"><span class="wico">${ICO_NOTE}</span> ${t.memo}</div>`:''}</div>
+              <span class="tl-dbadge ${b.cls}">${b.txt}</span>
+            </div>`;
+          }).join('') + `</div>`);
+    bindTaskEvents(dt);
+  } else {
+    dt.innerHTML = `<div class="card-sub" style="padding:4px 6px;">날짜를 탭하면 그날 일정이 보여요. <span class="wico">${ICO_RINGS}</span> 표시가 결혼식이에요.</div>`;
+  }
+}
+
+document.getElementById('viewTimelineBtn').addEventListener('click', ()=>{ rmView='timeline'; renderRoadmap(); });
+document.getElementById('viewCalendarBtn').addEventListener('click', ()=>{ rmView='calendar'; renderRoadmap(); });
+document.getElementById('calPrev').addEventListener('click', ()=>{ calCursor.setMonth(calCursor.getMonth()-1); renderCalendar(); });
+document.getElementById('calNext').addEventListener('click', ()=>{ calCursor.setMonth(calCursor.getMonth()+1); renderCalendar(); });
+document.getElementById('addTaskBtn').addEventListener('click', ()=>{
+  const id = 't'+Date.now();
+  S.tasks.push({id, name:'새 일정', offset:null, date:'', done:false, memo:''});
+  editingTaskId = id;
+  rmView = 'timeline';
+  renderRoadmap(); persist();
+});
+
+/* ================= TABS ================= */
+function goTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('main > section').forEach(s=>s.classList.toggle('active', s.id==='tab-'+name));
+  window.scrollTo({top:0});
+  if(name==='roadmap') checkCelebration();
+}
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>goTab(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click', ()=>goTab(el.dataset.go)));
+
+/* ================= SYNC ================= */
+function setSync(mode, text){
+  document.getElementById('syncDot').className = 'dot ' + (mode==='on'?'on':mode==='loading'?'loading':'');
+  document.getElementById('syncText').textContent = text;
+}
+function saveLocal(){ localStorage.setItem('wb_state', JSON.stringify(S)); }
+function loadLocal(){
+  const raw = localStorage.getItem('wb_state');
+  if(raw){ try{ S = JSON.parse(raw); }catch(e){} }
+  ensureDefaults();
+}
+
+async function loadFromSheet(){
+  if(!SCRIPT_URL){ setSync('off','연결 안됨'); loadLocal(); initInputs(); render(); return; }
+  setSync('loading','불러오는 중…');
+  try{
+    const res = await fetch(`${SCRIPT_URL}?action=read&sheet=WeddingBudget`).then(r=>r.json());
+    if(res.rows && res.rows.length>0 && res.rows[0].json){
+      S = JSON.parse(res.rows[0].json);
+    } else {
+      loadLocal();
+    }
+    setSync('on','연결됨 · 자동저장');
+    document.getElementById('connStatus').textContent = '정상 연결됐어요.';
+  }catch(err){
+    setSync('off','연결 실패');
+    document.getElementById('connStatus').textContent = 'URL을 확인해주세요. 지금은 이 기기에만 저장돼요.';
+    loadLocal();
+  }
+  ensureDefaults();
+  initInputs();
+  render();
+}
+
+function persist(){
+  saveLocal();
+  if(!SCRIPT_URL){ showToast('이 기기에만 저장돼요 · 설정에서 연동하세요','warn',2400); return; }
+  showToast('저장 중…','default', 999999);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    setSync('loading','저장 중…');
+    try{
+      const data = { headers:['json'], rows:[{json: JSON.stringify(S)}] };
+      await fetch(SCRIPT_URL, {method:'POST', body:new URLSearchParams({action:'write', sheet:'WeddingBudget', data:JSON.stringify(data)})});
+      setSync('on','연결됨 · 자동저장');
+      showToast(`<span class="wico" style="margin-right:5px;">${ICO_CHECK}</span>저장됨 · 시트에 반영됐어요`,'success', 1600);
+    }catch(e){
+      setSync('off','저장 실패');
+      showToast('저장 실패했어요 · 다시 시도해주세요','error', 3000);
+    }
+  }, 800);
+}
+
+let toastTimer = null;
+function showToast(text, type='default', duration=1800){
+  const el = document.getElementById('toast');
+  el.innerHTML = text;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  if(duration < 99999){
+    toastTimer = setTimeout(()=>{ el.classList.remove('show'); }, duration);
+  }
+}
+
+/* ================= SETTINGS ================= */
+document.getElementById('scriptUrl').value = SCRIPT_URL;
+document.getElementById('connectBtn').addEventListener('click', ()=>{
+  SCRIPT_URL = document.getElementById('scriptUrl').value.trim();
+  localStorage.setItem('wb_scriptUrl', SCRIPT_URL);
+  loadFromSheet();
+});
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('이 기기에 저장된 데이터를 초기화할까요? 구글시트 데이터는 유지돼요.')){
+    localStorage.removeItem('wb_state');
+    S = {assets:defaultAssets(), house:{cap:15000,rate:35,reserve:150}, spend:{}, income:{me:0,spouse:0}, fixed:{}, fixedEtc:[], loan:{amount:11000,rate:4.2,years:30}};
+    ensureDefaults(); initInputs(); render(); persist();
+  }
+});
+
+/* ================= BOOT ================= */
+loadFromSheet();
+</script>
 </body>
 </html>
