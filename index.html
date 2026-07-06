@@ -707,7 +707,7 @@
       <div class="card-sub" style="margin-bottom:12px;">기본 구글시트에 이미 연결되어 있어요. 다른 시트로 바꾸고 싶을 때만 아래에 새 URL을 입력하세요.</div>
       <div class="field">
         <label>Apps Script 웹앱 URL</label>
-        <input type="text" id="scriptUrl" placeholder="">
+        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
       <button class="btn primary" id="connectBtn">저장하고 연결</button>
       <div class="card-sub" id="connStatus" style="margin-top:10px;"></div>
@@ -1517,7 +1517,14 @@ function setSync(mode, text){
   document.getElementById('syncText').textContent = text;
 }
 function saveLocal(){ localStorage.setItem('wb_state', JSON.stringify(S)); }
+const SAMPLE_DATA_VERSION = 'v2';
 function loadLocal(){
+  // 샘플 기본값이 바뀔 때마다 SAMPLE_DATA_VERSION을 올리면,
+  // 이 기기에 예전에 저장된 값이 있어도 자동으로 지우고 새 기본값을 씁니다.
+  if(localStorage.getItem('wb_sample_version') !== SAMPLE_DATA_VERSION){
+    localStorage.removeItem('wb_state');
+    localStorage.setItem('wb_sample_version', SAMPLE_DATA_VERSION);
+  }
   const raw = localStorage.getItem('wb_state');
   if(raw){ try{ S = JSON.parse(raw); }catch(e){} }
   ensureDefaults();
